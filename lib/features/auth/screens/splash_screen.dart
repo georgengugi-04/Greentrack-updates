@@ -68,14 +68,14 @@ class _SplashScreenState extends State<SplashScreen>
                       child: Text('🌿', style: TextStyle(fontSize: 48)),
                     ),
                   )
-                  .animate()
-                  .scale(
-                    begin: const Offset(0.5, 0.5),
-                    end: const Offset(1, 1),
-                    duration: 600.ms,
-                    curve: Curves.elasticOut,
-                  )
-                  .fadeIn(duration: 400.ms),
+                      .animate()
+                      .scale(
+                        begin: const Offset(0.5, 0.5),
+                        end: const Offset(1, 1),
+                        duration: 600.ms,
+                        curve: Curves.elasticOut,
+                      )
+                      .fadeIn(duration: 400.ms),
 
                   const SizedBox(height: 24),
 
@@ -90,19 +90,21 @@ class _SplashScreenState extends State<SplashScreen>
                         TextSpan(
                           text: 'track',
                           style: AppTextStyles.display(
-                            38, color: AppColors.mint,
+                            38,
+                            color: AppColors.mint,
                           ),
                         ),
                         TextSpan(
                           text: '.',
-                          style: AppTextStyles.display(38, color: AppColors.amber),
+                          style:
+                              AppTextStyles.display(38, color: AppColors.amber),
                         ),
                       ],
                     ),
                   )
-                  .animate(delay: 300.ms)
-                  .fadeIn(duration: 600.ms)
-                  .slideY(begin: 0.3, end: 0),
+                      .animate(delay: 300.ms)
+                      .fadeIn(duration: 600.ms)
+                      .slideY(begin: 0.3, end: 0),
 
                   const SizedBox(height: 10),
 
@@ -113,9 +115,7 @@ class _SplashScreenState extends State<SplashScreen>
                       color: AppColors.mint.withOpacity(0.8),
                       letterSpacing: 1.5,
                     ),
-                  )
-                  .animate(delay: 500.ms)
-                  .fadeIn(duration: 600.ms),
+                  ).animate(delay: 500.ms).fadeIn(duration: 600.ms),
 
                   const SizedBox(height: 60),
 
@@ -129,9 +129,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                  )
-                  .animate(delay: 800.ms)
-                  .fadeIn(duration: 400.ms),
+                  ).animate(delay: 800.ms).fadeIn(duration: 400.ms),
                 ],
               ),
             ),
@@ -139,7 +137,8 @@ class _SplashScreenState extends State<SplashScreen>
             // Version badge
             Positioned(
               bottom: 40,
-              left: 0, right: 0,
+              left: 0,
+              right: 0,
               child: Text(
                 'v1.0.0',
                 textAlign: TextAlign.center,
@@ -147,9 +146,7 @@ class _SplashScreenState extends State<SplashScreen>
                   color: Colors.white.withOpacity(0.4),
                   letterSpacing: 1,
                 ),
-              )
-              .animate(delay: 1000.ms)
-              .fadeIn(),
+              ).animate(delay: 1000.ms).fadeIn(),
             ),
           ],
         ),
@@ -160,8 +157,12 @@ class _SplashScreenState extends State<SplashScreen>
   List<Widget> _buildParticles(Size size) {
     return List.generate(6, (i) {
       final positions = [
-        Offset(0.1, 0.1), Offset(0.9, 0.15), Offset(0.05, 0.6),
-        Offset(0.85, 0.7), Offset(0.5, 0.05), Offset(0.7, 0.9),
+        Offset(0.1, 0.1),
+        Offset(0.9, 0.15),
+        Offset(0.05, 0.6),
+        Offset(0.85, 0.7),
+        Offset(0.5, 0.05),
+        Offset(0.7, 0.9),
       ];
       final sizes = [80.0, 120.0, 60.0, 100.0, 70.0, 90.0];
       final p = positions[i];
@@ -176,14 +177,12 @@ class _SplashScreenState extends State<SplashScreen>
             shape: BoxShape.circle,
             color: AppColors.mint.withOpacity(0.06 + i * 0.01),
           ),
-        )
-        .animate(onPlay: (c) => c.repeat(reverse: true))
-        .scale(
-          begin: const Offset(0.8, 0.8),
-          end: const Offset(1.2, 1.2),
-          duration: Duration(seconds: 2 + i),
-          curve: Curves.easeInOut,
-        ),
+        ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+              begin: const Offset(0.8, 0.8),
+              end: const Offset(1.2, 1.2),
+              duration: Duration(seconds: 2 + i),
+              curve: Curves.easeInOut,
+            ),
       );
     });
   }

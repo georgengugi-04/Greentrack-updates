@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/models.dart';
+import '../../../data/models/models.dart';
 
 class CropsScreen extends StatefulWidget {
   const CropsScreen({super.key});
@@ -12,7 +12,8 @@ class CropsScreen extends StatefulWidget {
   State<CropsScreen> createState() => _CropsScreenState();
 }
 
-class _CropsScreenState extends State<CropsScreen> with SingleTickerProviderStateMixin {
+class _CropsScreenState extends State<CropsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _searchController = TextEditingController();
   String _searchQuery = '';
@@ -30,10 +31,11 @@ class _CropsScreenState extends State<CropsScreen> with SingleTickerProviderStat
     var crops = List<CropModel>.from(MockData.crops);
 
     if (_searchQuery.isNotEmpty) {
-      crops = crops.where((c) =>
-        c.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        c.variety.toLowerCase().contains(_searchQuery.toLowerCase())
-      ).toList();
+      crops = crops
+          .where((c) =>
+              c.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              c.variety.toLowerCase().contains(_searchQuery.toLowerCase()))
+          .toList();
     }
 
     if (_statusFilter != null) {
@@ -68,7 +70,8 @@ class _CropsScreenState extends State<CropsScreen> with SingleTickerProviderStat
         title: const Text('My Crops'),
         actions: [
           IconButton(
-            icon: Icon(_gridView ? Icons.view_list_rounded : Icons.grid_view_rounded),
+            icon: Icon(
+                _gridView ? Icons.view_list_rounded : Icons.grid_view_rounded),
             onPressed: () => setState(() => _gridView = !_gridView),
           ),
           IconButton(
@@ -91,16 +94,16 @@ class _CropsScreenState extends State<CropsScreen> with SingleTickerProviderStat
                     hintText: 'Search crops, varieties…',
                     prefixIcon: const Icon(Icons.search_rounded, size: 20),
                     suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _searchQuery = '');
-                          },
-                        )
-                      : null,
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 18),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _searchQuery = '');
+                            },
+                          )
+                        : null,
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 10),
+                        horizontal: 16, vertical: 10),
                     fillColor: AppColors.parchment,
                   ),
                 ),
@@ -113,9 +116,15 @@ class _CropsScreenState extends State<CropsScreen> with SingleTickerProviderStat
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 tabs: [
                   Tab(text: 'All (${_filteredCrops.length})'),
-                  Tab(text: '🌾 Harvest (${_byStatus(CropStatus.readyToHarvest).length})'),
-                  Tab(text: '🌿 Growing (${_byStatus(CropStatus.vegetative).length})'),
-                  Tab(text: '⚠️ Attention (${_byStatus(CropStatus.concern).length})'),
+                  Tab(
+                      text:
+                          '🌾 Harvest (${_byStatus(CropStatus.readyToHarvest).length})'),
+                  Tab(
+                      text:
+                          '🌿 Growing (${_byStatus(CropStatus.vegetative).length})'),
+                  Tab(
+                      text:
+                          '⚠️ Attention (${_byStatus(CropStatus.concern).length})'),
                   Tab(text: '✅ Done'),
                 ],
               ),
@@ -127,13 +136,21 @@ class _CropsScreenState extends State<CropsScreen> with SingleTickerProviderStat
         controller: _tabController,
         children: [
           _CropList(crops: _filteredCrops, gridView: _gridView),
-          _CropList(crops: _byStatus(CropStatus.readyToHarvest), gridView: _gridView),
-          _CropList(crops: _filteredCrops
-            .where((c) => [CropStatus.vegetative, CropStatus.flowering,
-              CropStatus.fruiting, CropStatus.sprouting].contains(c.status))
-            .toList(), gridView: _gridView),
+          _CropList(
+              crops: _byStatus(CropStatus.readyToHarvest), gridView: _gridView),
+          _CropList(
+              crops: _filteredCrops
+                  .where((c) => [
+                        CropStatus.vegetative,
+                        CropStatus.flowering,
+                        CropStatus.fruiting,
+                        CropStatus.sprouting
+                      ].contains(c.status))
+                  .toList(),
+              gridView: _gridView),
           _CropList(crops: _byStatus(CropStatus.concern), gridView: _gridView),
-          _CropList(crops: _byStatus(CropStatus.harvested), gridView: _gridView),
+          _CropList(
+              crops: _byStatus(CropStatus.harvested), gridView: _gridView),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -186,10 +203,11 @@ class _SortOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(label, style: AppTextStyles.body(14, weight: FontWeight.w500)),
+      title:
+          Text(label, style: AppTextStyles.body(14, weight: FontWeight.w500)),
       trailing: value == current
-        ? const Icon(Icons.check_circle_rounded, color: AppColors.leaf)
-        : null,
+          ? const Icon(Icons.check_circle_rounded, color: AppColors.leaf)
+          : null,
       onTap: () => onSelect(value),
     );
   }
@@ -216,8 +234,9 @@ class _CropList extends StatelessWidget {
         ),
         itemCount: crops.length,
         itemBuilder: (_, i) => _CropGridTile(crop: crops[i])
-          .animate(delay: Duration(milliseconds: 50 * i))
-          .fadeIn().scale(begin: const Offset(0.9, 0.9)),
+            .animate(delay: Duration(milliseconds: 50 * i))
+            .fadeIn()
+            .scale(begin: const Offset(0.9, 0.9)),
       );
     }
 
@@ -236,8 +255,8 @@ class _CropList extends StatelessWidget {
                 foregroundColor: AppColors.amber,
                 icon: Icons.eco_outlined,
                 label: 'Harvest',
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.horizontal(left: Radius.circular(12)),
               ),
               SlidableAction(
                 onPressed: (_) {},
@@ -245,15 +264,16 @@ class _CropList extends StatelessWidget {
                 foregroundColor: AppColors.red,
                 icon: Icons.delete_outline_rounded,
                 label: 'Delete',
-                borderRadius: const BorderRadius.horizontal(
-                  right: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.horizontal(right: Radius.circular(12)),
               ),
             ],
           ),
           child: _CropListTile(crop: crops[i]),
         )
-        .animate(delay: Duration(milliseconds: 60 * i))
-        .fadeIn().slideY(begin: 0.1),
+            .animate(delay: Duration(milliseconds: 60 * i))
+            .fadeIn()
+            .slideY(begin: 0.1),
       ),
     );
   }
@@ -274,10 +294,10 @@ class _CropListTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: crop.status == CropStatus.concern
-              ? AppColors.red.withOpacity(0.3)
-              : crop.status == CropStatus.readyToHarvest
-                ? AppColors.amber.withOpacity(0.3)
-                : AppColors.border,
+                ? AppColors.red.withOpacity(0.3)
+                : crop.status == CropStatus.readyToHarvest
+                    ? AppColors.amber.withOpacity(0.3)
+                    : AppColors.border,
           ),
           boxShadow: [AppShadows.subtle],
         ),
@@ -285,14 +305,14 @@ class _CropListTile extends StatelessWidget {
           children: [
             // Emoji avatar
             Container(
-              width: 52, height: 52,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: crop.status.bgColor,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Center(
-                child: Text(crop.emoji,
-                  style: const TextStyle(fontSize: 26)),
+                child: Text(crop.emoji, style: const TextStyle(fontSize: 26)),
               ),
             ),
             const SizedBox(width: 12),
@@ -306,18 +326,21 @@ class _CropListTile extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(crop.name,
-                          style: AppTextStyles.body(
-                            14, weight: FontWeight.w700,
-                            color: AppColors.forest,
-                          )),
+                            style: AppTextStyles.body(
+                              14,
+                              weight: FontWeight.w700,
+                              color: AppColors.forest,
+                            )),
                       ),
                       if (crop.isFavorite)
                         const Icon(Icons.favorite_rounded,
-                          size: 14, color: AppColors.red),
+                            size: 14, color: AppColors.red),
                     ],
                   ),
-                  Text('${crop.variety} · ${crop.plotId.replaceAll('_',' ').toUpperCase()}',
-                    style: AppTextStyles.body(11, color: AppColors.slateLight)),
+                  Text(
+                      '${crop.variety} · ${crop.plotId.replaceAll('_', ' ').toUpperCase()}',
+                      style:
+                          AppTextStyles.body(11, color: AppColors.slateLight)),
                   const SizedBox(height: 8),
 
                   // Progress bar
@@ -330,7 +353,8 @@ class _CropListTile extends StatelessWidget {
                             value: crop.harvestProgress,
                             minHeight: 5,
                             backgroundColor: AppColors.border,
-                            valueColor: AlwaysStoppedAnimation(crop.status.color),
+                            valueColor:
+                                AlwaysStoppedAnimation(crop.status.color),
                           ),
                         ),
                       ),
@@ -338,7 +362,7 @@ class _CropListTile extends StatelessWidget {
                       Text(
                         '${(crop.harvestProgress * 100).toInt()}%',
                         style: AppTextStyles.mono(
-                          size: 10, color: AppColors.slateLight),
+                            size: 10, color: AppColors.slateLight),
                       ),
                     ],
                   ),
@@ -352,7 +376,8 @@ class _CropListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: crop.status.bgColor,
                     borderRadius: BorderRadius.circular(20),
@@ -360,7 +385,8 @@ class _CropListTile extends StatelessWidget {
                   child: Text(
                     crop.status.emoji + ' ' + crop.status.label,
                     style: AppTextStyles.body(
-                      9, weight: FontWeight.w700,
+                      9,
+                      weight: FontWeight.w700,
                       color: crop.status.color,
                     ),
                   ),
@@ -368,16 +394,18 @@ class _CropListTile extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   crop.daysToHarvest > 0
-                    ? '${crop.daysToHarvest}d to harvest'
-                    : 'Ready!',
+                      ? '${crop.daysToHarvest}d to harvest'
+                      : 'Ready!',
                   style: AppTextStyles.mono(
                     size: 10,
-                    color: crop.isNearHarvest ? AppColors.amber : AppColors.slateLight,
+                    color: crop.isNearHarvest
+                        ? AppColors.amber
+                        : AppColors.slateLight,
                   ),
                 ),
                 Text(
                   '~${crop.estimatedYieldKg}kg',
-                  style: AppTextStyles.mono(size: 10, color: AppColors.leaf),
+                  style: AppTextStyles.mono(10, color: AppColors.leaf),
                 ),
               ],
             ),
@@ -412,25 +440,30 @@ class _CropGridTile extends StatelessWidget {
               children: [
                 Text(crop.emoji, style: const TextStyle(fontSize: 32)),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: crop.status.bgColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(crop.status.emoji,
-                    style: const TextStyle(fontSize: 12)),
+                      style: const TextStyle(fontSize: 12)),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            Text(crop.name,
-              style: AppTextStyles.body(
-                13, weight: FontWeight.w700, color: AppColors.forest),
-              maxLines: 1, overflow: TextOverflow.ellipsis,
+            Text(
+              crop.name,
+              style: AppTextStyles.body(13,
+                  weight: FontWeight.w700, color: AppColors.forest),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            Text(crop.variety,
+            Text(
+              crop.variety,
               style: AppTextStyles.body(10, color: AppColors.slateLight),
-              maxLines: 1, overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const Spacer(),
             ClipRRect(
@@ -447,13 +480,11 @@ class _CropGridTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  crop.daysToHarvest > 0
-                    ? '${crop.daysToHarvest}d'
-                    : 'Now!',
-                  style: AppTextStyles.mono(size: 10, color: AppColors.slateLight),
+                  crop.daysToHarvest > 0 ? '${crop.daysToHarvest}d' : 'Now!',
+                  style: AppTextStyles.mono(10, color: AppColors.slateLight),
                 ),
                 Text('${crop.estimatedYieldKg}kg',
-                  style: AppTextStyles.mono(size: 10, color: AppColors.leaf)),
+                    style: AppTextStyles.mono(10, color: AppColors.leaf)),
               ],
             ),
           ],
@@ -473,10 +504,10 @@ class _EmptyState extends StatelessWidget {
           const Text('🌱', style: TextStyle(fontSize: 64)),
           const SizedBox(height: 16),
           Text('No crops here yet',
-            style: Theme.of(context).textTheme.headlineSmall),
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text('Tap the + button to plant your first crop',
-            style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => context.push('/crops/add'),

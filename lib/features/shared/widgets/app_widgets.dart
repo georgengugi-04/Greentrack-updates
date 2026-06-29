@@ -28,11 +28,13 @@ class EmptyStateWidget extends StatelessWidget {
           children: [
             Text(emoji, style: const TextStyle(fontSize: 56)),
             const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center),
+            Text(title,
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text(subtitle, style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center),
+            Text(subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center),
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: 24),
               ElevatedButton(onPressed: onAction, child: Text(actionLabel!)),
@@ -50,7 +52,8 @@ class StatusBadge extends StatelessWidget {
   final Color color;
   final String? emoji;
 
-  const StatusBadge({super.key, required this.label, required this.color, this.emoji});
+  const StatusBadge(
+      {super.key, required this.label, required this.color, this.emoji});
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +127,7 @@ class LifecycleProgressBar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(label, style: AppTextStyles.mono(size: 10, color: AppColors.slateLight)),
+        Text(label, style: AppTextStyles.mono(10, color: AppColors.slateLight)),
       ],
     );
   }
@@ -147,7 +150,8 @@ class ShimmerCard extends StatefulWidget {
   State<ShimmerCard> createState() => _ShimmerCardState();
 }
 
-class _ShimmerCardState extends State<ShimmerCard> with SingleTickerProviderStateMixin {
+class _ShimmerCardState extends State<ShimmerCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -241,21 +245,27 @@ class AppDialogs {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 72, height: 72,
+                width: 72,
+                height: 72,
                 decoration: const BoxDecoration(
-                  color: AppColors.paleGreen, shape: BoxShape.circle),
-                child: Center(child: Text(emoji, style: const TextStyle(fontSize: 36))),
+                    color: AppColors.paleGreen, shape: BoxShape.circle),
+                child: Center(
+                    child: Text(emoji, style: const TextStyle(fontSize: 36))),
               ),
               const SizedBox(height: 20),
               Text(title, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 8),
-              Text(message, textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () { Navigator.pop(context); onDone(); },
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onDone();
+                  },
                   child: const Text('Done'),
                 ),
               ),

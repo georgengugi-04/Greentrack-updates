@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:collection/collection.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/models.dart';
+import '../../../data/models/models.dart';
 
 class AddCropScreen extends StatefulWidget {
   const AddCropScreen({super.key});
@@ -28,8 +28,28 @@ class _AddCropScreenState extends State<AddCropScreen> {
   DateTime _harvestDate = DateTime.now().add(const Duration(days: 60));
   WateringFrequency _watering = WateringFrequency.everyTwoDays;
 
-  final _emojis = ['🍅','🥬','🥒','🫑','🌽','🧅','🌱','🍆','🥕','🌸','🫘',
-    '🥦','🍓','🫐','🍇','🌶️','🥔','🧄','🍌','🥑'];
+  final _emojis = [
+    '🍅',
+    '🥬',
+    '🥒',
+    '🫑',
+    '🌽',
+    '🧅',
+    '🌱',
+    '🍆',
+    '🥕',
+    '🌸',
+    '🫘',
+    '🥦',
+    '🍓',
+    '🫐',
+    '🍇',
+    '🌶️',
+    '🥔',
+    '🧄',
+    '🍌',
+    '🥑'
+  ];
 
   final _steps = ['Basics', 'Location', 'Schedule', 'Review'];
 
@@ -63,17 +83,21 @@ class _AddCropScreenState extends State<AddCropScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 72, height: 72,
+                width: 72,
+                height: 72,
                 decoration: const BoxDecoration(
-                  color: AppColors.paleGreen, shape: BoxShape.circle),
-                child: const Center(child: Text('🌱', style: TextStyle(fontSize: 36))),
+                    color: AppColors.paleGreen, shape: BoxShape.circle),
+                child: const Center(
+                    child: Text('🌱', style: TextStyle(fontSize: 36))),
               ).animate().scale(curve: Curves.elasticOut, duration: 500.ms),
               const SizedBox(height: 20),
-              Text('Crop Added!', style: Theme.of(context).textTheme.headlineSmall),
+              Text('Crop Added!',
+                  style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 8),
-              Text('${_nameCtrl.text.isEmpty ? "Your crop" : _nameCtrl.text} has been planted in your garden.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
+              Text(
+                  '${_nameCtrl.text.isEmpty ? "Your crop" : _nameCtrl.text} has been planted in your garden.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -112,9 +136,13 @@ class _AddCropScreenState extends State<AddCropScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 _BasicsStep(
-                  nameCtrl: _nameCtrl, varietyCtrl: _varietyCtrl, qtyCtrl: _qtyCtrl,
-                  category: _category, onCategoryChanged: (c) => setState(() => _category = c),
-                  emoji: _selectedEmoji, emojis: _emojis,
+                  nameCtrl: _nameCtrl,
+                  varietyCtrl: _varietyCtrl,
+                  qtyCtrl: _qtyCtrl,
+                  category: _category,
+                  onCategoryChanged: (c) => setState(() => _category = c),
+                  emoji: _selectedEmoji,
+                  emojis: _emojis,
                   onEmojiChanged: (e) => setState(() => _selectedEmoji = e),
                 ),
                 _LocationStep(
@@ -122,7 +150,8 @@ class _AddCropScreenState extends State<AddCropScreen> {
                   onPlotSelected: (id) => setState(() => _selectedPlotId = id),
                 ),
                 _ScheduleStep(
-                  plantingDate: _plantingDate, harvestDate: _harvestDate,
+                  plantingDate: _plantingDate,
+                  harvestDate: _harvestDate,
                   watering: _watering,
                   onPlantingChanged: (d) => setState(() => _plantingDate = d),
                   onHarvestChanged: (d) => setState(() => _harvestDate = d),
@@ -131,7 +160,8 @@ class _AddCropScreenState extends State<AddCropScreen> {
                 ),
                 _ReviewStep(
                   emoji: _selectedEmoji,
-                  name: _nameCtrl.text.isEmpty ? 'Unnamed Crop' : _nameCtrl.text,
+                  name:
+                      _nameCtrl.text.isEmpty ? 'Unnamed Crop' : _nameCtrl.text,
                   variety: _varietyCtrl.text,
                   category: _category,
                   plotId: _selectedPlotId,
@@ -169,24 +199,30 @@ class _AddCropScreenState extends State<AddCropScreen> {
           return Column(
             children: [
               Container(
-                width: 28, height: 28,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
-                  color: isDone || isActive ? AppColors.forest : AppColors.border,
+                  color:
+                      isDone || isActive ? AppColors.forest : AppColors.border,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: isDone
-                    ? const Icon(Icons.check, color: Colors.white, size: 14)
-                    : Text('${idx + 1}',
-                        style: AppTextStyles.body(11, weight: FontWeight.w700,
-                          color: isActive ? Colors.white : AppColors.slateLight)),
+                      ? const Icon(Icons.check, color: Colors.white, size: 14)
+                      : Text('${idx + 1}',
+                          style: AppTextStyles.body(11,
+                              weight: FontWeight.w700,
+                              color: isActive
+                                  ? Colors.white
+                                  : AppColors.slateLight)),
                 ),
               ),
               const SizedBox(height: 4),
               Text(_steps[idx],
-                style: AppTextStyles.body(9,
-                  weight: isActive ? FontWeight.w700 : FontWeight.w500,
-                  color: isActive ? AppColors.forest : AppColors.slateLight)),
+                  style: AppTextStyles.body(9,
+                      weight: isActive ? FontWeight.w700 : FontWeight.w500,
+                      color:
+                          isActive ? AppColors.forest : AppColors.slateLight)),
             ],
           );
         }),
@@ -199,8 +235,12 @@ class _AddCropScreenState extends State<AddCropScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        boxShadow: [BoxShadow(color: AppColors.slate.withOpacity(0.06),
-          blurRadius: 12, offset: const Offset(0, -4))],
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.slate.withOpacity(0.06),
+              blurRadius: 12,
+              offset: const Offset(0, -4))
+        ],
       ),
       child: Row(
         children: [
@@ -216,7 +256,8 @@ class _AddCropScreenState extends State<AddCropScreen> {
             flex: 2,
             child: ElevatedButton(
               onPressed: _next,
-              child: Text(_step == _steps.length - 1 ? '🌱 Plant Crop' : 'Continue →'),
+              child: Text(
+                  _step == _steps.length - 1 ? '🌱 Plant Crop' : 'Continue →'),
             ),
           ),
         ],
@@ -236,9 +277,14 @@ class _BasicsStep extends StatelessWidget {
   final ValueChanged<String> onEmojiChanged;
 
   const _BasicsStep({
-    required this.nameCtrl, required this.varietyCtrl, required this.qtyCtrl,
-    required this.category, required this.onCategoryChanged,
-    required this.emoji, required this.emojis, required this.onEmojiChanged,
+    required this.nameCtrl,
+    required this.varietyCtrl,
+    required this.qtyCtrl,
+    required this.category,
+    required this.onCategoryChanged,
+    required this.emoji,
+    required this.emojis,
+    required this.onEmojiChanged,
   });
 
   @override
@@ -249,12 +295,11 @@ class _BasicsStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Let's plant something! 🌱",
-            style: Theme.of(context).textTheme.headlineSmall),
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 4),
           Text('Choose an icon and tell us the basics',
-            style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 20),
-
           Text('Choose Icon', style: Theme.of(context).textTheme.labelMedium),
           const SizedBox(height: 10),
           SizedBox(
@@ -268,7 +313,8 @@ class _BasicsStep extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => onEmojiChanged(e),
                   child: Container(
-                    width: 48, height: 48,
+                    width: 48,
+                    height: 48,
                     margin: const EdgeInsets.only(right: 8),
                     decoration: BoxDecoration(
                       color: isSelected ? AppColors.paleGreen : AppColors.cream,
@@ -278,53 +324,55 @@ class _BasicsStep extends StatelessWidget {
                         width: isSelected ? 2 : 1,
                       ),
                     ),
-                    child: Center(child: Text(e, style: const TextStyle(fontSize: 22))),
+                    child: Center(
+                        child: Text(e, style: const TextStyle(fontSize: 22))),
                   ),
                 );
               },
             ),
           ),
           const SizedBox(height: 20),
-
           _FieldLabel('Crop Name', required: true),
           TextField(
             controller: nameCtrl,
             decoration: const InputDecoration(hintText: 'e.g. Cherry Tomatoes'),
           ),
           const SizedBox(height: 16),
-
           _FieldLabel('Variety'),
           TextField(
             controller: varietyCtrl,
             decoration: const InputDecoration(hintText: 'e.g. Sweet Million'),
           ),
           const SizedBox(height: 16),
-
           _FieldLabel('Category'),
           const SizedBox(height: 8),
           Wrap(
-            spacing: 8, runSpacing: 8,
+            spacing: 8,
+            runSpacing: 8,
             children: CropCategory.values.map((c) {
               final isSelected = c == category;
               return GestureDetector(
                 onTap: () => onCategoryChanged(c),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.forest : AppColors.cream,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isSelected ? AppColors.forest : AppColors.border),
+                        color:
+                            isSelected ? AppColors.forest : AppColors.border),
                   ),
                   child: Text('${c.emoji} ${c.label}',
-                    style: AppTextStyles.body(12, weight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.slateMid)),
+                      style: AppTextStyles.body(12,
+                          weight: FontWeight.w600,
+                          color:
+                              isSelected ? Colors.white : AppColors.slateMid)),
                 ),
               );
             }).toList(),
           ),
           const SizedBox(height: 16),
-
           _FieldLabel('Quantity Planted'),
           TextField(
             controller: qtyCtrl,
@@ -343,7 +391,8 @@ class _LocationStep extends StatelessWidget {
   final String? selectedPlotId;
   final ValueChanged<String> onPlotSelected;
 
-  const _LocationStep({required this.selectedPlotId, required this.onPlotSelected});
+  const _LocationStep(
+      {required this.selectedPlotId, required this.onPlotSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -353,12 +402,11 @@ class _LocationStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Where will it grow? 📍',
-            style: Theme.of(context).textTheme.headlineSmall),
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 4),
           Text('Select a garden plot for this crop',
-            style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 20),
-
           ...MockData.plots.map((plot) {
             final isSelected = plot.id == selectedPlotId;
             return GestureDetector(
@@ -377,13 +425,15 @@ class _LocationStep extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 48, height: 48,
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         gradient: AppColors.primaryGradient,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Center(child: Text(plot.emoji,
-                        style: const TextStyle(fontSize: 22))),
+                      child: Center(
+                          child: Text(plot.emoji,
+                              style: const TextStyle(fontSize: 22))),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -391,28 +441,31 @@ class _LocationStep extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(plot.name,
-                            style: AppTextStyles.body(14, weight: FontWeight.w700,
-                              color: AppColors.forest)),
-                          Text('${plot.sizeLabel} · ${plot.soilType.label} · ${plot.activeCropCount} crops',
-                            style: AppTextStyles.body(11, color: AppColors.slateLight)),
+                              style: AppTextStyles.body(14,
+                                  weight: FontWeight.w700,
+                                  color: AppColors.forest)),
+                          Text(
+                              '${plot.sizeLabel} · ${plot.soilType.label} · ${plot.activeCropCount} crops',
+                              style: AppTextStyles.body(11,
+                                  color: AppColors.slateLight)),
                         ],
                       ),
                     ),
                     if (isSelected)
-                      const Icon(Icons.check_circle_rounded, color: AppColors.leaf),
+                      const Icon(Icons.check_circle_rounded,
+                          color: AppColors.leaf),
                   ],
                 ),
               ),
             );
           }),
-
           const SizedBox(height: 8),
           OutlinedButton.icon(
             onPressed: () {},
             icon: const Icon(Icons.add_rounded, size: 18),
             label: const Text('Create New Plot'),
             style: OutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 48)),
+                minimumSize: const Size(double.infinity, 48)),
           ),
         ],
       ),
@@ -430,15 +483,22 @@ class _ScheduleStep extends StatelessWidget {
   final TextEditingController notesCtrl;
 
   const _ScheduleStep({
-    required this.plantingDate, required this.harvestDate, required this.watering,
-    required this.onPlantingChanged, required this.onHarvestChanged,
-    required this.onWateringChanged, required this.notesCtrl,
+    required this.plantingDate,
+    required this.harvestDate,
+    required this.watering,
+    required this.onPlantingChanged,
+    required this.onHarvestChanged,
+    required this.onWateringChanged,
+    required this.notesCtrl,
   });
 
-  Future<void> _pickDate(BuildContext context, DateTime initial, ValueChanged<DateTime> onPicked) async {
+  Future<void> _pickDate(BuildContext context, DateTime initial,
+      ValueChanged<DateTime> onPicked) async {
     final picked = await showDatePicker(
-      context: context, initialDate: initial,
-      firstDate: DateTime(2020), lastDate: DateTime(2030),
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
     );
     if (picked != null) onPicked(picked);
   }
@@ -451,85 +511,91 @@ class _ScheduleStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Set the schedule 🗓️',
-            style: Theme.of(context).textTheme.headlineSmall),
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 4),
           Text('When did you plant and when do you expect to harvest?',
-            style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 20),
-
           _FieldLabel('Planting Date', required: true),
           GestureDetector(
             onTap: () => _pickDate(context, plantingDate, onPlantingChanged),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: AppColors.cream, borderRadius: BorderRadius.circular(12),
+                color: AppColors.cream,
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.leaf),
+                  const Icon(Icons.calendar_today_rounded,
+                      size: 18, color: AppColors.leaf),
                   const SizedBox(width: 10),
-                  Text('${plantingDate.day}/${plantingDate.month}/${plantingDate.year}',
-                    style: AppTextStyles.body(14, weight: FontWeight.w600)),
+                  Text(
+                      '${plantingDate.day}/${plantingDate.month}/${plantingDate.year}',
+                      style: AppTextStyles.body(14, weight: FontWeight.w600)),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 16),
-
           _FieldLabel('Expected Harvest Date'),
           GestureDetector(
             onTap: () => _pickDate(context, harvestDate, onHarvestChanged),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: AppColors.cream, borderRadius: BorderRadius.circular(12),
+                color: AppColors.cream,
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.event_available_rounded, size: 18, color: AppColors.amber),
+                  const Icon(Icons.event_available_rounded,
+                      size: 18, color: AppColors.amber),
                   const SizedBox(width: 10),
-                  Text('${harvestDate.day}/${harvestDate.month}/${harvestDate.year}',
-                    style: AppTextStyles.body(14, weight: FontWeight.w600)),
+                  Text(
+                      '${harvestDate.day}/${harvestDate.month}/${harvestDate.year}',
+                      style: AppTextStyles.body(14, weight: FontWeight.w600)),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 16),
-
           _FieldLabel('Watering Frequency'),
           const SizedBox(height: 8),
           Wrap(
-            spacing: 8, runSpacing: 8,
+            spacing: 8,
+            runSpacing: 8,
             children: WateringFrequency.values.map((w) {
               final isSelected = w == watering;
               return GestureDetector(
                 onTap: () => onWateringChanged(w),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.blue : AppColors.cream,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isSelected ? AppColors.blue : AppColors.border),
+                        color: isSelected ? AppColors.blue : AppColors.border),
                   ),
                   child: Text(w.label,
-                    style: AppTextStyles.body(12, weight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.slateMid)),
+                      style: AppTextStyles.body(12,
+                          weight: FontWeight.w600,
+                          color:
+                              isSelected ? Colors.white : AppColors.slateMid)),
                 ),
               );
             }).toList(),
           ),
           const SizedBox(height: 16),
-
           _FieldLabel('Notes (Optional)'),
           TextField(
             controller: notesCtrl,
             maxLines: 3,
             decoration: const InputDecoration(
-              hintText: 'Special care instructions, source, etc.'),
+                hintText: 'Special care instructions, source, etc.'),
           ),
         ],
       ),
@@ -547,10 +613,15 @@ class _ReviewStep extends StatelessWidget {
   final WateringFrequency watering;
 
   const _ReviewStep({
-    required this.emoji, required this.name, required this.variety,
-    required this.category, required this.plotId,
-    required this.plantingDate, required this.harvestDate,
-    required this.watering, required this.qty,
+    required this.emoji,
+    required this.name,
+    required this.variety,
+    required this.category,
+    required this.plotId,
+    required this.plantingDate,
+    required this.harvestDate,
+    required this.watering,
+    required this.qty,
   });
 
   @override
@@ -563,12 +634,11 @@ class _ReviewStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Review & Confirm ✓',
-            style: Theme.of(context).textTheme.headlineSmall),
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 4),
           Text('Double-check before adding to your garden',
-            style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 20),
-
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -578,30 +648,35 @@ class _ReviewStep extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  width: 64, height: 64,
+                  width: 64,
+                  height: 64,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: Center(child: Text(emoji, style: const TextStyle(fontSize: 32))),
+                  child: Center(
+                      child: Text(emoji, style: const TextStyle(fontSize: 32))),
                 ),
                 const SizedBox(height: 12),
-                Text(name, style: AppTextStyles.display(20, color: Colors.white)),
+                Text(name,
+                    style: AppTextStyles.display(20, color: Colors.white)),
                 if (variety.isNotEmpty)
-                  Text(variety, style: AppTextStyles.body(12,
-                    color: Colors.white.withOpacity(0.7))),
+                  Text(variety,
+                      style: AppTextStyles.body(12,
+                          color: Colors.white.withOpacity(0.7))),
               ],
             ),
           ),
           const SizedBox(height: 20),
-
           _ReviewRow('🏷️', 'Category', '${category.emoji} ${category.label}'),
-          _ReviewRow('📍', 'Plot', plot != null ? '${plot.emoji} ${plot.name}' : 'Not selected'),
-          _ReviewRow('🗓️', 'Planted', '${plantingDate.day}/${plantingDate.month}/${plantingDate.year}'),
-          _ReviewRow('🌾', 'Harvest By', '${harvestDate.day}/${harvestDate.month}/${harvestDate.year}'),
+          _ReviewRow('📍', 'Plot',
+              plot != null ? '${plot.emoji} ${plot.name}' : 'Not selected'),
+          _ReviewRow('🗓️', 'Planted',
+              '${plantingDate.day}/${plantingDate.month}/${plantingDate.year}'),
+          _ReviewRow('🌾', 'Harvest By',
+              '${harvestDate.day}/${harvestDate.month}/${harvestDate.year}'),
           _ReviewRow('💧', 'Watering', watering.label),
           _ReviewRow('🔢', 'Quantity', qty.isEmpty ? 'Not specified' : qty),
-
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(14),
@@ -611,12 +686,13 @@ class _ReviewStep extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.info_outline_rounded, color: AppColors.blue, size: 18),
+                const Icon(Icons.info_outline_rounded,
+                    color: AppColors.blue, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'You\'ll receive notifications as this crop approaches harvest time.',
-                    style: AppTextStyles.body(11, color: AppColors.blue)),
+                      'You\'ll receive notifications as this crop approaches harvest time.',
+                      style: AppTextStyles.body(11, color: AppColors.blue)),
                 ),
               ],
             ),
@@ -639,10 +715,12 @@ class _ReviewRow extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 14)),
           const SizedBox(width: 10),
-          Text(label, style: AppTextStyles.body(12, color: AppColors.slateLight)),
+          Text(label,
+              style: AppTextStyles.body(12, color: AppColors.slateLight)),
           const Spacer(),
-          Text(value, style: AppTextStyles.body(12, weight: FontWeight.w700,
-            color: AppColors.forest)),
+          Text(value,
+              style: AppTextStyles.body(12,
+                  weight: FontWeight.w700, color: AppColors.forest)),
         ],
       ),
     );
@@ -661,11 +739,15 @@ class _FieldLabel extends StatelessWidget {
       child: RichText(
         text: TextSpan(
           children: [
-            TextSpan(text: text, style: AppTextStyles.body(
-              12, weight: FontWeight.w600, color: AppColors.slateMid)),
+            TextSpan(
+                text: text,
+                style: AppTextStyles.body(12,
+                    weight: FontWeight.w600, color: AppColors.slateMid)),
             if (required)
-              TextSpan(text: ' *', style: AppTextStyles.body(
-                12, weight: FontWeight.w600, color: AppColors.red)),
+              TextSpan(
+                  text: ' *',
+                  style: AppTextStyles.body(12,
+                      weight: FontWeight.w600, color: AppColors.red)),
           ],
         ),
       ),

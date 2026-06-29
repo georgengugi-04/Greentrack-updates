@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/models.dart';
+import '../../../data/models/models.dart';
 
 class LogHarvestScreen extends StatefulWidget {
   const LogHarvestScreen({super.key});
@@ -40,7 +40,8 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select Crop *', style: Theme.of(context).textTheme.labelMedium),
+            Text('Select Crop *',
+                style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 10),
             SizedBox(
               height: 100,
@@ -57,7 +58,8 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
                       margin: const EdgeInsets.only(right: 10),
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.paleGreen : AppColors.cream,
+                        color:
+                            isSelected ? AppColors.paleGreen : AppColors.cream,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: isSelected ? AppColors.leaf : AppColors.border,
@@ -67,13 +69,16 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(crop.emoji, style: const TextStyle(fontSize: 26)),
+                          Text(crop.emoji,
+                              style: const TextStyle(fontSize: 26)),
                           const SizedBox(height: 6),
                           Text(crop.name,
-                            style: AppTextStyles.body(9, weight: FontWeight.w700,
-                              color: AppColors.forest),
-                            textAlign: TextAlign.center,
-                            maxLines: 2, overflow: TextOverflow.ellipsis),
+                              style: AppTextStyles.body(9,
+                                  weight: FontWeight.w700,
+                                  color: AppColors.forest),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis),
                         ],
                       ),
                     ),
@@ -82,63 +87,77 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
               ),
             ),
             const SizedBox(height: 20),
-
-            Text('Harvest Date', style: Theme.of(context).textTheme.labelMedium),
+            Text('Harvest Date',
+                style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () async {
                 final picked = await showDatePicker(
-                  context: context, initialDate: _harvestDate,
-                  firstDate: DateTime(2020), lastDate: DateTime(2030));
+                    context: context,
+                    initialDate: _harvestDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2030));
                 if (picked != null) setState(() => _harvestDate = picked);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
-                  color: AppColors.cream, borderRadius: BorderRadius.circular(12),
+                  color: AppColors.cream,
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.leaf),
+                    const Icon(Icons.calendar_today_rounded,
+                        size: 18, color: AppColors.leaf),
                     const SizedBox(width: 10),
-                    Text('${_harvestDate.day}/${_harvestDate.month}/${_harvestDate.year}',
-                      style: AppTextStyles.body(14, weight: FontWeight.w600)),
+                    Text(
+                        '${_harvestDate.day}/${_harvestDate.month}/${_harvestDate.year}',
+                        style: AppTextStyles.body(14, weight: FontWeight.w600)),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 20),
-
-            Text('Quantity (kg) *', style: Theme.of(context).textTheme.labelMedium),
+            Text('Quantity (kg) *',
+                style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.cream, borderRadius: BorderRadius.circular(16),
+                color: AppColors.cream,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.border),
               ),
               child: Column(
                 children: [
                   Text('${_quantity.toStringAsFixed(1)} kg',
-                    style: AppTextStyles.display(32, color: AppColors.leaf)),
+                      style: AppTextStyles.display(32, color: AppColors.leaf)),
                   Slider(
-                    value: _quantity, min: 0.1, max: 10, divisions: 99,
+                    value: _quantity,
+                    min: 0.1,
+                    max: 10,
+                    divisions: 99,
                     onChanged: (v) => setState(() => _quantity = v),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('0.1 kg', style: AppTextStyles.body(10, color: AppColors.slateLight)),
-                      Text('10 kg', style: AppTextStyles.body(10, color: AppColors.slateLight)),
+                      Text('0.1 kg',
+                          style: AppTextStyles.body(10,
+                              color: AppColors.slateLight)),
+                      Text('10 kg',
+                          style: AppTextStyles.body(10,
+                              color: AppColors.slateLight)),
                     ],
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-
-            Text('Quality Rating', style: Theme.of(context).textTheme.labelMedium),
+            Text('Quality Rating',
+                style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,29 +169,40 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
                   child: Column(
                     children: [
                       Container(
-                        width: 52, height: 52,
+                        width: 52,
+                        height: 52,
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.amberPale : AppColors.cream,
+                          color: isSelected
+                              ? AppColors.amberPale
+                              : AppColors.cream,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: isSelected ? AppColors.amber : AppColors.border,
+                            color:
+                                isSelected ? AppColors.amber : AppColors.border,
                             width: isSelected ? 2 : 1,
                           ),
                         ),
-                        child: Center(child: Text(emoji, style: const TextStyle(fontSize: 24))),
+                        child: Center(
+                            child: Text(emoji,
+                                style: const TextStyle(fontSize: 24))),
                       ),
                       const SizedBox(height: 4),
-                      Text(label, style: AppTextStyles.body(9,
-                        color: isSelected ? AppColors.amber : AppColors.slateLight,
-                        weight: isSelected ? FontWeight.w700 : FontWeight.w400)),
+                      Text(label,
+                          style: AppTextStyles.body(9,
+                              color: isSelected
+                                  ? AppColors.amber
+                                  : AppColors.slateLight,
+                              weight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w400)),
                     ],
                   ),
                 );
               }).toList(),
             ),
             const SizedBox(height: 20),
-
-            Text('Produce Destination *', style: Theme.of(context).textTheme.labelMedium),
+            Text('Produce Destination *',
+                style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 10),
             ...HarvestDestination.values.map((d) {
               final isSelected = d == _destination;
@@ -182,7 +212,9 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
                   margin: const EdgeInsets.only(bottom: 8),
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: isSelected ? d.color.withOpacity(0.08) : AppColors.cream,
+                    color: isSelected
+                        ? d.color.withOpacity(0.08)
+                        : AppColors.cream,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: isSelected ? d.color : AppColors.border,
@@ -193,40 +225,44 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
                     children: [
                       Text(d.emoji, style: const TextStyle(fontSize: 20)),
                       const SizedBox(width: 12),
-                      Expanded(child: Text(d.label,
-                        style: AppTextStyles.body(13, weight: FontWeight.w600,
-                          color: isSelected ? d.color : AppColors.slate))),
+                      Expanded(
+                          child: Text(d.label,
+                              style: AppTextStyles.body(13,
+                                  weight: FontWeight.w600,
+                                  color:
+                                      isSelected ? d.color : AppColors.slate))),
                       if (isSelected)
-                        Icon(Icons.check_circle_rounded, color: d.color, size: 20),
+                        Icon(Icons.check_circle_rounded,
+                            color: d.color, size: 20),
                     ],
                   ),
                 ),
               );
             }),
-
             if (_destination == HarvestDestination.sold) ...[
               const SizedBox(height: 8),
-              Text('Price per kg (₱)', style: Theme.of(context).textTheme.labelMedium),
+              Text('Price per kg (₱)',
+                  style: Theme.of(context).textTheme.labelMedium),
               const SizedBox(height: 8),
               TextField(
                 controller: _priceCtrl,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: '0.00', prefixText: '₱ '),
+                decoration:
+                    const InputDecoration(hintText: '0.00', prefixText: '₱ '),
               ),
             ],
-
             const SizedBox(height: 20),
-            Text('Notes (Optional)', style: Theme.of(context).textTheme.labelMedium),
+            Text('Notes (Optional)',
+                style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 8),
             TextField(
               controller: _notesCtrl,
               maxLines: 3,
               decoration: const InputDecoration(
-                hintText: 'Quality observations, storage method, buyer info…'),
+                  hintText:
+                      'Quality observations, storage method, buyer info…'),
             ),
             const SizedBox(height: 32),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -256,18 +292,21 @@ class _LogHarvestScreenState extends State<LogHarvestScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 72, height: 72,
+                width: 72,
+                height: 72,
                 decoration: const BoxDecoration(
-                  color: AppColors.amberPale, shape: BoxShape.circle),
-                child: const Center(child: Text('🌾', style: TextStyle(fontSize: 36))),
+                    color: AppColors.amberPale, shape: BoxShape.circle),
+                child: const Center(
+                    child: Text('🌾', style: TextStyle(fontSize: 36))),
               ).animate().scale(curve: Curves.elasticOut, duration: 500.ms),
               const SizedBox(height: 20),
-              Text('Harvest Logged!', style: Theme.of(context).textTheme.headlineSmall),
+              Text('Harvest Logged!',
+                  style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 8),
               Text(
-                '${_quantity.toStringAsFixed(1)} kg of ${_selectedCrop?.name} → ${_destination.label}',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
+                  '${_quantity.toStringAsFixed(1)} kg of ${_selectedCrop?.name} → ${_destination.label}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,

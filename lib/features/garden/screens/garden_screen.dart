@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/models.dart';
+import '../../../data/models/models.dart';
 
 class GardenScreen extends StatelessWidget {
   const GardenScreen({super.key});
@@ -10,7 +10,8 @@ class GardenScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final totalArea = MockData.plots.fold<double>(0, (s, p) => s + p.areaM2);
-    final totalCrops = MockData.plots.fold<int>(0, (s, p) => s + p.activeCropCount);
+    final totalCrops =
+        MockData.plots.fold<int>(0, (s, p) => s + p.activeCropCount);
 
     return Scaffold(
       backgroundColor: AppColors.parchment,
@@ -27,11 +28,16 @@ class GardenScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Expanded(child: _StatCard('🗺️', '${totalArea.toStringAsFixed(0)}m²', 'Total Area')),
+                  Expanded(
+                      child: _StatCard('🗺️',
+                          '${totalArea.toStringAsFixed(0)}m²', 'Total Area')),
                   const SizedBox(width: 10),
-                  Expanded(child: _StatCard('📍', '${MockData.plots.length}', 'Active Plots')),
+                  Expanded(
+                      child: _StatCard(
+                          '📍', '${MockData.plots.length}', 'Active Plots')),
                   const SizedBox(width: 10),
-                  Expanded(child: _StatCard('🌱', '$totalCrops', 'Total Crops')),
+                  Expanded(
+                      child: _StatCard('🌱', '$totalCrops', 'Total Crops')),
                 ],
               ),
             ),
@@ -71,15 +77,18 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.cream, borderRadius: BorderRadius.circular(14),
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
           Text(emoji, style: const TextStyle(fontSize: 18)),
           const SizedBox(height: 6),
-          Text(value, style: AppTextStyles.display(18, color: AppColors.forest)),
-          Text(label, style: AppTextStyles.body(9, color: AppColors.slateLight)),
+          Text(value,
+              style: AppTextStyles.display(18, color: AppColors.forest)),
+          Text(label,
+              style: AppTextStyles.body(9, color: AppColors.slateLight)),
         ],
       ),
     );
@@ -113,17 +122,21 @@ class _PlotCard extends StatelessWidget {
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Row(
                 children: [
                   Container(
-                    width: 48, height: 48,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Center(child: Text(plot.emoji, style: const TextStyle(fontSize: 24))),
+                    child: Center(
+                        child: Text(plot.emoji,
+                            style: const TextStyle(fontSize: 24))),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -131,15 +144,18 @@ class _PlotCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(plot.name,
-                          style: AppTextStyles.display(17, color: Colors.white)),
+                            style:
+                                AppTextStyles.display(17, color: Colors.white)),
                         Text('📐 ${plot.sizeLabel}',
-                          style: AppTextStyles.body(11, color: Colors.white.withOpacity(0.7))),
+                            style: AppTextStyles.body(11,
+                                color: Colors.white.withOpacity(0.7))),
                       ],
                     ),
                   ),
                   if (needsAttention)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -158,8 +174,14 @@ class _PlotCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(child: _PlotStat('Soil', plot.soilType.label)),
-                      Expanded(child: _PlotStat('Crops', '${plot.activeCropCount}')),
-                      Expanded(child: _PlotStat('Sun', plot.sunExposure == SunExposure.fullSun ? 'Full' : 'Partial')),
+                      Expanded(
+                          child: _PlotStat('Crops', '${plot.activeCropCount}')),
+                      Expanded(
+                          child: _PlotStat(
+                              'Sun',
+                              plot.sunExposure == SunExposure.fullSun
+                                  ? 'Full'
+                                  : 'Partial')),
                     ],
                   ),
                   const SizedBox(height: 14),
@@ -170,15 +192,23 @@ class _PlotCard extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Wrap(
                         spacing: 6,
-                        children: crops.take(6).map((c) => Container(
-                          width: 32, height: 32,
-                          decoration: BoxDecoration(
-                            color: c.status.bgColor,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: c.status.color.withOpacity(0.3)),
-                          ),
-                          child: Center(child: Text(c.emoji, style: const TextStyle(fontSize: 14))),
-                        )).toList(),
+                        children: crops
+                            .take(6)
+                            .map((c) => Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: c.status.bgColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: c.status.color.withOpacity(0.3)),
+                                  ),
+                                  child: Center(
+                                      child: Text(c.emoji,
+                                          style:
+                                              const TextStyle(fontSize: 14))),
+                                ))
+                            .toList(),
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -208,8 +238,9 @@ class _PlotCard extends StatelessWidget {
         ),
       ),
     )
-    .animate(delay: Duration(milliseconds: 100 * index))
-    .fadeIn().slideY(begin: 0.05);
+        .animate(delay: Duration(milliseconds: 100 * index))
+        .fadeIn()
+        .slideY(begin: 0.05);
   }
 }
 
@@ -221,8 +252,9 @@ class _PlotStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: AppTextStyles.body(13, weight: FontWeight.w700,
-          color: AppColors.forest)),
+        Text(value,
+            style: AppTextStyles.body(13,
+                weight: FontWeight.w700, color: AppColors.forest)),
         Text(label, style: AppTextStyles.body(9, color: AppColors.slateLight)),
       ],
     );

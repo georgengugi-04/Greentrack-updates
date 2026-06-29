@@ -4,7 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/models.dart';
+import '../../../data/models/models.dart';
 
 class CropDetailScreen extends StatefulWidget {
   final String cropId;
@@ -24,16 +24,16 @@ class _CropDetailScreenState extends State<CropDetailScreen>
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     final crop = MockData.crops.firstWhere((c) => c.id == widget.cropId,
-      orElse: () => MockData.crops.first);
+        orElse: () => MockData.crops.first);
     _favorite = crop.isFavorite;
   }
 
   @override
   Widget build(BuildContext context) {
-    final crop = MockData.crops.firstWhere(
-      (c) => c.id == widget.cropId, orElse: () => MockData.crops.first);
+    final crop = MockData.crops.firstWhere((c) => c.id == widget.cropId,
+        orElse: () => MockData.crops.first);
     final plot = MockData.plots.firstWhere((p) => p.id == crop.plotId,
-      orElse: () => MockData.plots.first);
+        orElse: () => MockData.plots.first);
 
     return Scaffold(
       backgroundColor: AppColors.parchment,
@@ -75,8 +75,11 @@ class _CropDetailScreenState extends State<CropDetailScreen>
       iconTheme: const IconThemeData(color: Colors.white),
       actions: [
         IconButton(
-          icon: Icon(_favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-            color: _favorite ? AppColors.red : Colors.white),
+          icon: Icon(
+              _favorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              color: _favorite ? AppColors.red : Colors.white),
           onPressed: () => setState(() => _favorite = !_favorite),
         ),
         IconButton(
@@ -91,28 +94,33 @@ class _CropDetailScreenState extends State<CropDetailScreen>
           child: Stack(
             children: [
               Positioned(
-                right: -20, top: 40,
+                right: -20,
+                top: 40,
                 child: Opacity(
                   opacity: 0.15,
-                  child: Text(crop.emoji, style: const TextStyle(fontSize: 180)),
+                  child:
+                      Text(crop.emoji, style: const TextStyle(fontSize: 180)),
                 ),
               ),
               Positioned(
-                left: 20, right: 20, bottom: 60,
+                left: 20,
+                right: 20,
+                bottom: 60,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '${crop.category.emoji} ${crop.category.label}',
-                        style: AppTextStyles.body(
-                          11, weight: FontWeight.w600,
-                          color: Colors.white.withOpacity(0.9)),
+                        style: AppTextStyles.body(11,
+                            weight: FontWeight.w600,
+                            color: Colors.white.withOpacity(0.9)),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -125,10 +133,11 @@ class _CropDetailScreenState extends State<CropDetailScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(crop.name,
-                                style: AppTextStyles.display(24, color: Colors.white)),
+                                  style: AppTextStyles.display(24,
+                                      color: Colors.white)),
                               Text('${crop.variety} · ${plot.name}',
-                                style: AppTextStyles.body(
-                                  13, color: Colors.white.withOpacity(0.7))),
+                                  style: AppTextStyles.body(13,
+                                      color: Colors.white.withOpacity(0.7))),
                             ],
                           ),
                         ),
@@ -146,10 +155,15 @@ class _CropDetailScreenState extends State<CropDetailScreen>
 
   Widget _buildLifecycleSection(CropModel crop) {
     final stages = [
-      CropStatus.seedling, CropStatus.sprouting, CropStatus.vegetative,
-      CropStatus.flowering, CropStatus.fruiting, CropStatus.readyToHarvest,
+      CropStatus.seedling,
+      CropStatus.sprouting,
+      CropStatus.vegetative,
+      CropStatus.flowering,
+      CropStatus.fruiting,
+      CropStatus.readyToHarvest,
     ];
-    final currentIndex = stages.indexOf(crop.status).clamp(0, stages.length - 1);
+    final currentIndex =
+        stages.indexOf(crop.status).clamp(0, stages.length - 1);
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -166,10 +180,10 @@ class _CropDetailScreenState extends State<CropDetailScreen>
           Row(
             children: [
               Text('Lifecycle Progress',
-                style: Theme.of(context).textTheme.titleLarge),
+                  style: Theme.of(context).textTheme.titleLarge),
               const Spacer(),
               Text('${(crop.harvestProgress * 100).toInt()}%',
-                style: AppTextStyles.display(18, color: crop.status.color)),
+                  style: AppTextStyles.display(18, color: crop.status.color)),
             ],
           ),
           const SizedBox(height: 18),
@@ -180,15 +194,18 @@ class _CropDetailScreenState extends State<CropDetailScreen>
             child: Stack(
               children: [
                 Positioned(
-                  top: 16, left: 16, right: 16,
+                  top: 16,
+                  left: 16,
+                  right: 16,
                   child: Container(height: 3, color: AppColors.border),
                 ),
                 Positioned(
-                  top: 16, left: 16,
+                  top: 16,
+                  left: 16,
                   child: Container(
                     height: 3,
                     width: (MediaQuery.of(context).size.width - 72) *
-                      (currentIndex / (stages.length - 1)),
+                        (currentIndex / (stages.length - 1)),
                     decoration: BoxDecoration(
                       gradient: AppColors.mintGradient,
                     ),
@@ -201,23 +218,27 @@ class _CropDetailScreenState extends State<CropDetailScreen>
                     return Column(
                       children: [
                         Container(
-                          width: 32, height: 32,
+                          width: 32,
+                          height: 32,
                           decoration: BoxDecoration(
                             color: passed ? e.value.color : AppColors.border,
                             shape: BoxShape.circle,
                             border: e.key == currentIndex
-                              ? Border.all(color: Colors.white, width: 3)
-                              : null,
+                                ? Border.all(color: Colors.white, width: 3)
+                                : null,
                             boxShadow: e.key == currentIndex
-                              ? [BoxShadow(
-                                  color: e.value.color.withOpacity(0.4),
-                                  blurRadius: 8, spreadRadius: 2,
-                                )]
-                              : null,
+                                ? [
+                                    BoxShadow(
+                                      color: e.value.color.withOpacity(0.4),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    )
+                                  ]
+                                : null,
                           ),
                           child: Center(
                             child: Text(e.value.emoji,
-                              style: const TextStyle(fontSize: 14)),
+                                style: const TextStyle(fontSize: 14)),
                           ),
                         ),
                       ],
@@ -237,8 +258,8 @@ class _CropDetailScreenState extends State<CropDetailScreen>
               ),
               child: Text(
                 'Current Stage: ${crop.status.label}',
-                style: AppTextStyles.body(
-                  12, weight: FontWeight.w700, color: crop.status.color),
+                style: AppTextStyles.body(12,
+                    weight: FontWeight.w700, color: crop.status.color),
               ),
             ),
           ),
@@ -252,17 +273,21 @@ class _CropDetailScreenState extends State<CropDetailScreen>
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Expanded(child: _MiniStat('📅', '${crop.daysInGround}', 'Days Growing')),
+          Expanded(
+              child: _MiniStat('📅', '${crop.daysInGround}', 'Days Growing')),
           const SizedBox(width: 10),
-          Expanded(child: _MiniStat('⏳',
-            crop.daysToHarvest > 0 ? '${crop.daysToHarvest}' : 'Now',
-            'To Harvest')),
+          Expanded(
+              child: _MiniStat(
+                  '⏳',
+                  crop.daysToHarvest > 0 ? '${crop.daysToHarvest}' : 'Now',
+                  'To Harvest')),
           const SizedBox(width: 10),
-          Expanded(child: _MiniStat('⚖️',
-            '${crop.estimatedYieldKg}kg', 'Est. Yield')),
+          Expanded(
+              child:
+                  _MiniStat('⚖️', '${crop.estimatedYieldKg}kg', 'Est. Yield')),
           const SizedBox(width: 10),
-          Expanded(child: _MiniStat('🌱',
-            '${crop.quantityPlanted}', 'Planted')),
+          Expanded(
+              child: _MiniStat('🌱', '${crop.quantityPlanted}', 'Planted')),
         ],
       ),
     );
@@ -306,7 +331,8 @@ class _CropDetailScreenState extends State<CropDetailScreen>
         boxShadow: [
           BoxShadow(
             color: AppColors.slate.withOpacity(0.08),
-            blurRadius: 12, offset: const Offset(0, -4),
+            blurRadius: 12,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
@@ -349,9 +375,12 @@ class _CropDetailScreenState extends State<CropDetailScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 12),
-          Container(width: 36, height: 4,
-            decoration: BoxDecoration(color: AppColors.border,
-              borderRadius: BorderRadius.circular(4))),
+          Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(4))),
           const SizedBox(height: 12),
           ListTile(
             leading: const Icon(Icons.edit_outlined),
@@ -369,8 +398,10 @@ class _CropDetailScreenState extends State<CropDetailScreen>
             onTap: () => Navigator.pop(context),
           ),
           ListTile(
-            leading: const Icon(Icons.delete_outline_rounded, color: AppColors.red),
-            title: const Text('Delete Crop', style: TextStyle(color: AppColors.red)),
+            leading:
+                const Icon(Icons.delete_outline_rounded, color: AppColors.red),
+            title: const Text('Delete Crop',
+                style: TextStyle(color: AppColors.red)),
             onTap: () => Navigator.pop(context),
           ),
           const SizedBox(height: 16),
@@ -397,9 +428,11 @@ class _MiniStat extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 16)),
           const SizedBox(height: 4),
-          Text(value, style: AppTextStyles.display(16, color: AppColors.forest)),
-          Text(label, style: AppTextStyles.body(9, color: AppColors.slateLight),
-            textAlign: TextAlign.center),
+          Text(value,
+              style: AppTextStyles.display(16, color: AppColors.forest)),
+          Text(label,
+              style: AppTextStyles.body(9, color: AppColors.slateLight),
+              textAlign: TextAlign.center),
         ],
       ),
     );
@@ -425,32 +458,34 @@ class _OverviewTab extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: crop.status == CropStatus.concern
-                  ? AppColors.errorLight : AppColors.paleGreen,
+                    ? AppColors.errorLight
+                    : AppColors.paleGreen,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
                 children: [
                   Text(crop.status == CropStatus.concern ? '⚠️' : '📝',
-                    style: const TextStyle(fontSize: 18)),
+                      style: const TextStyle(fontSize: 18)),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(crop.notes!,
-                    style: AppTextStyles.body(12, color: AppColors.slate))),
+                  Expanded(
+                      child: Text(crop.notes!,
+                          style:
+                              AppTextStyles.body(12, color: AppColors.slate))),
                 ],
               ),
             ),
             const SizedBox(height: 16),
           ],
-
           _DetailRow('🗓️', 'Planting Date',
-            '${crop.plantingDate.day}/${crop.plantingDate.month}/${crop.plantingDate.year}'),
+              '${crop.plantingDate.day}/${crop.plantingDate.month}/${crop.plantingDate.year}'),
           _DetailRow('🌾', 'Expected Harvest',
-            '${crop.expectedHarvestDate.day}/${crop.expectedHarvestDate.month}/${crop.expectedHarvestDate.year}'),
+              '${crop.expectedHarvestDate.day}/${crop.expectedHarvestDate.month}/${crop.expectedHarvestDate.year}'),
           _DetailRow('💧', 'Watering Schedule', crop.wateringFrequency.label),
           _DetailRow('📍', 'Garden Plot', '${plot.emoji} ${plot.name}'),
           _DetailRow('🧪', 'Soil Type', plot.soilType.label),
           _DetailRow('☀️', 'Sun Exposure', plot.sunExposure.label),
-          _DetailRow('🔢', 'Quantity Planted', '${crop.quantityPlanted} plants'),
-
+          _DetailRow(
+              '🔢', 'Quantity Planted', '${crop.quantityPlanted} plants'),
           const SizedBox(height: 20),
           Text('Yield Tracking', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 12),
@@ -469,9 +504,12 @@ class _OverviewTab extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Estimated', style: AppTextStyles.body(11, color: AppColors.slateLight)),
+                          Text('Estimated',
+                              style: AppTextStyles.body(11,
+                                  color: AppColors.slateLight)),
                           Text('${crop.estimatedYieldKg} kg',
-                            style: AppTextStyles.display(18, color: AppColors.slate)),
+                              style: AppTextStyles.display(18,
+                                  color: AppColors.slate)),
                         ],
                       ),
                     ),
@@ -482,9 +520,12 @@ class _OverviewTab extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Actual So Far', style: AppTextStyles.body(11, color: AppColors.slateLight)),
+                            Text('Actual So Far',
+                                style: AppTextStyles.body(11,
+                                    color: AppColors.slateLight)),
                             Text('${crop.actualYieldKg} kg',
-                              style: AppTextStyles.display(18, color: AppColors.leaf)),
+                                style: AppTextStyles.display(18,
+                                    color: AppColors.leaf)),
                           ],
                         ),
                       ),
@@ -522,10 +563,12 @@ class _DetailRow extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 16)),
           const SizedBox(width: 12),
-          Text(label, style: AppTextStyles.body(13, color: AppColors.slateLight)),
+          Text(label,
+              style: AppTextStyles.body(13, color: AppColors.slateLight)),
           const Spacer(),
-          Text(value, style: AppTextStyles.body(13, weight: FontWeight.w700,
-            color: AppColors.forest)),
+          Text(value,
+              style: AppTextStyles.body(13,
+                  weight: FontWeight.w700, color: AppColors.forest)),
         ],
       ),
     );
@@ -541,8 +584,9 @@ class _GrowthTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final records = MockData.growthRecords
-      .where((g) => g.cropId == crop.id)
-      .toList()..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
+        .where((g) => g.cropId == crop.id)
+        .toList()
+      ..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
 
     if (records.isEmpty) {
       return Center(
@@ -551,10 +595,11 @@ class _GrowthTab extends StatelessWidget {
           children: [
             const Text('📏', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 12),
-            Text('No growth records yet', style: Theme.of(context).textTheme.titleMedium),
+            Text('No growth records yet',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 6),
             Text('Add a measurement to start tracking',
-              style: Theme.of(context).textTheme.bodySmall),
+                style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       );
@@ -576,9 +621,12 @@ class _GrowthTab extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('Height Over Time', style: Theme.of(context).textTheme.titleLarge),
+                    Text('Height Over Time',
+                        style: Theme.of(context).textTheme.titleLarge),
                     const Spacer(),
-                    Text('cm', style: AppTextStyles.body(11, color: AppColors.slateLight)),
+                    Text('cm',
+                        style: AppTextStyles.body(11,
+                            color: AppColors.slateLight)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -586,30 +634,42 @@ class _GrowthTab extends StatelessWidget {
                   height: 160,
                   child: LineChart(
                     LineChartData(
-                      gridData: FlGridData(show: true,
-                        getDrawingHorizontalLine: (_) => FlLine(color: AppColors.border, strokeWidth: 1)),
+                      gridData: FlGridData(
+                          show: true,
+                          getDrawingHorizontalLine: (_) =>
+                              FlLine(color: AppColors.border, strokeWidth: 1)),
                       titlesData: FlTitlesData(
-                        leftTitles: AxisTitles(sideTitles: SideTitles(
-                          showTitles: true, reservedSize: 30,
+                        leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 30,
                           getTitlesWidget: (v, _) => Text('${v.toInt()}',
-                            style: AppTextStyles.body(9, color: AppColors.slateLight)),
+                              style: AppTextStyles.body(9,
+                                  color: AppColors.slateLight)),
                         )),
-                        bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        bottomTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                        topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
                       ),
                       borderData: FlBorderData(show: false),
                       lineBarsData: [
                         LineChartBarData(
-                          spots: records.asMap().entries
-                            .map((e) => FlSpot(e.key.toDouble(), e.value.heightCm))
-                            .toList(),
+                          spots: records
+                              .asMap()
+                              .entries
+                              .map((e) =>
+                                  FlSpot(e.key.toDouble(), e.value.heightCm))
+                              .toList(),
                           isCurved: true,
                           color: AppColors.leaf,
                           barWidth: 3,
                           dotData: const FlDotData(show: true),
                           belowBarData: BarAreaData(
-                            show: true, color: AppColors.leaf.withOpacity(0.1)),
+                              show: true,
+                              color: AppColors.leaf.withOpacity(0.1)),
                         ),
                       ],
                     ),
@@ -619,7 +679,8 @@ class _GrowthTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Text('Measurement History', style: Theme.of(context).textTheme.titleLarge),
+          Text('Measurement History',
+              style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 12),
           ...records.reversed.map((r) => _GrowthRecordTile(record: r)),
         ],
@@ -647,18 +708,25 @@ class _GrowthRecordTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('${record.recordedAt.day}/${record.recordedAt.month}/${record.recordedAt.year}',
-                style: AppTextStyles.body(12, weight: FontWeight.w700, color: AppColors.forest)),
+              Text(
+                  '${record.recordedAt.day}/${record.recordedAt.month}/${record.recordedAt.year}',
+                  style: AppTextStyles.body(12,
+                      weight: FontWeight.w700, color: AppColors.forest)),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: record.health == 'Concern' ? AppColors.errorLight : AppColors.successLight,
+                  color: record.health == 'Concern'
+                      ? AppColors.errorLight
+                      : AppColors.successLight,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(record.health,
-                  style: AppTextStyles.body(10, weight: FontWeight.w700,
-                    color: record.health == 'Concern' ? AppColors.error : AppColors.success)),
+                    style: AppTextStyles.body(10,
+                        weight: FontWeight.w700,
+                        color: record.health == 'Concern'
+                            ? AppColors.error
+                            : AppColors.success)),
               ),
             ],
           ),
@@ -676,7 +744,8 @@ class _GrowthRecordTile extends StatelessWidget {
           ),
           if (record.notes != null) ...[
             const SizedBox(height: 8),
-            Text(record.notes!, style: AppTextStyles.body(11, color: AppColors.slateLight)),
+            Text(record.notes!,
+                style: AppTextStyles.body(11, color: AppColors.slateLight)),
           ],
         ],
       ),
@@ -694,7 +763,7 @@ class _GrowthMetric extends StatelessWidget {
       children: [
         Text(emoji, style: const TextStyle(fontSize: 12)),
         const SizedBox(width: 4),
-        Text(value, style: AppTextStyles.mono(size: 11, color: AppColors.slateMid)),
+        Text(value, style: AppTextStyles.mono(11, color: AppColors.slateMid)),
       ],
     );
   }
@@ -750,15 +819,17 @@ class _ActivityTab extends StatelessWidget {
                     Text(log.type.emoji, style: const TextStyle(fontSize: 14)),
                     const SizedBox(width: 6),
                     Text(log.type.label,
-                      style: AppTextStyles.body(11, weight: FontWeight.w700,
-                        color: log.type.color)),
+                        style: AppTextStyles.body(11,
+                            weight: FontWeight.w700, color: log.type.color)),
                     const Spacer(),
                     Text('${log.performedAt.day}/${log.performedAt.month}',
-                      style: AppTextStyles.body(10, color: AppColors.slateLight)),
+                        style: AppTextStyles.body(10,
+                            color: AppColors.slateLight)),
                   ],
                 ),
                 const SizedBox(height: 6),
-                Text(log.description, style: AppTextStyles.body(12, color: AppColors.slate)),
+                Text(log.description,
+                    style: AppTextStyles.body(12, color: AppColors.slate)),
               ],
             ),
           ),
@@ -785,7 +856,7 @@ class _PhotosTab extends StatelessWidget {
           Text('No photos yet', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 6),
           Text('Document your crop\'s journey',
-            style: Theme.of(context).textTheme.bodySmall),
+              style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 20),
           OutlinedButton.icon(
             onPressed: () {},

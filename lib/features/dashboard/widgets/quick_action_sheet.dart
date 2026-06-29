@@ -9,12 +9,18 @@ class QuickActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = [
-      _Action('🌱', 'Add Crop',       'Record a new planting',    AppColors.leaf,   () => context.go('/crops/add')),
-      _Action('💧', 'Log Watering',   'Track water applied',       AppColors.blue,   () => _stub(context, 'Watering logged! 💧')),
-      _Action('🌾', 'Log Harvest',    'Record what you picked',    AppColors.amber,  () => context.go('/harvest/log')),
-      _Action('📏', 'Growth Update',  'Measure plant height',      AppColors.purple, () => context.go('/growth/add')),
-      _Action('🧪', 'Fertilize',      'Track fertilizer applied',  AppColors.forest, () => _stub(context, 'Fertilizer logged! 🧪')),
-      _Action('📸', 'Add Photo',      'Document plant progress',   AppColors.red,    () => _stub(context, 'Photo added! 📸')),
+      _Action('🌱', 'Add Crop', 'Record a new planting', AppColors.leaf,
+          () => context.go('/crops/add')),
+      _Action('💧', 'Log Watering', 'Track water applied', AppColors.blue,
+          () => _stub(context, 'Watering logged! 💧')),
+      _Action('🌾', 'Log Harvest', 'Record what you picked', AppColors.amber,
+          () => context.go('/harvest/log')),
+      _Action('📏', 'Growth Update', 'Measure plant height', AppColors.purple,
+          () => context.go('/growth/add')),
+      _Action('🧪', 'Fertilize', 'Track fertilizer applied', AppColors.forest,
+          () => _stub(context, 'Fertilizer logged! 🧪')),
+      _Action('📸', 'Add Photo', 'Document plant progress', AppColors.red,
+          () => _stub(context, 'Photo added! 📸')),
     ];
 
     return Container(
@@ -28,7 +34,8 @@ class QuickActionSheet extends StatelessWidget {
         children: [
           // Handle
           Container(
-            width: 36, height: 4,
+            width: 36,
+            height: 4,
             decoration: BoxDecoration(
               color: AppColors.border,
               borderRadius: BorderRadius.circular(4),
@@ -39,7 +46,7 @@ class QuickActionSheet extends StatelessWidget {
           Row(
             children: [
               Text('Quick Actions',
-                style: Theme.of(context).textTheme.headlineSmall),
+                  style: Theme.of(context).textTheme.headlineSmall),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.close_rounded, size: 22),
@@ -50,7 +57,7 @@ class QuickActionSheet extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text('What would you like to record?',
-            style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 24),
 
           GridView.count(
@@ -84,10 +91,11 @@ class QuickActionSheet extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Good growing day today!',
-                        style: AppTextStyles.body(13, weight: FontWeight.w600,
-                          color: AppColors.forest)),
+                          style: AppTextStyles.body(13,
+                              weight: FontWeight.w600,
+                              color: AppColors.forest)),
                       Text('24°C · Humidity 68% · Light winds',
-                        style: AppTextStyles.body(11, color: AppColors.leaf)),
+                          style: AppTextStyles.body(11, color: AppColors.leaf)),
                     ],
                   ),
                 ),
@@ -130,25 +138,29 @@ class _ActionCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 44, height: 44,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: action.color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Center(
-                child: Text(action.emoji,
-                  style: const TextStyle(fontSize: 22)),
+                child: Text(action.emoji, style: const TextStyle(fontSize: 22)),
               ),
             ),
             const SizedBox(height: 10),
-            Text(action.title,
+            Text(
+              action.title,
               style: AppTextStyles.body(
-                12, weight: FontWeight.w700, color: AppColors.slate,
+                12,
+                weight: FontWeight.w700,
+                color: AppColors.slate,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 2),
-            Text(action.subtitle,
+            Text(
+              action.subtitle,
               style: AppTextStyles.body(10, color: AppColors.slateLight),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -156,9 +168,9 @@ class _ActionCard extends StatelessWidget {
           ],
         ),
       )
-      .animate(delay: Duration(milliseconds: 50 * index))
-      .fadeIn(duration: 300.ms)
-      .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOut),
+          .animate(delay: Duration(milliseconds: 50 * index))
+          .fadeIn(duration: 300.ms)
+          .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOut),
     );
   }
 }

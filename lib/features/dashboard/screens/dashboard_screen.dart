@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/models.dart';
+import '../../../data/models/models.dart';
 import '../../shared/widgets/app_widgets.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -39,7 +39,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 // Weather Bar
                 _WeatherBar(data: MockData.weather)
-                .animate().fadeIn(delay: 100.ms).slideY(begin: 0.1),
+                    .animate()
+                    .fadeIn(delay: 100.ms)
+                    .slideY(begin: 0.1),
 
                 const SizedBox(height: 20),
 
@@ -63,7 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Row(
                     children: [
                       Text('Active Crops',
-                        style: Theme.of(context).textTheme.titleLarge),
+                          style: Theme.of(context).textTheme.titleLarge),
                       const Spacer(),
                       TextButton(
                         onPressed: () {},
@@ -75,8 +77,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 8),
 
                 // Horizontal crop cards
-                _HorizontalCropList(crops: MockData.crops
-                  .where((c) => c.status != CropStatus.harvested).toList()),
+                _HorizontalCropList(
+                    crops: MockData.crops
+                        .where((c) => c.status != CropStatus.harvested)
+                        .toList()),
                 const SizedBox(height: 24),
 
                 // Upcoming Harvests
@@ -128,10 +132,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Good Morning! 🌅',
-                style: AppTextStyles.label(
-                  color: AppColors.leaf, letterSpacing: 0.5, size: 11,
-                )),
-              Text('Maria\'s Garden',
+                  style: AppTextStyles.label(
+                    color: AppColors.leaf,
+                    letterSpacing: 0.5,
+                    size: 11,
+                  )),
+              Text(
+                'Maria\'s Garden',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
@@ -142,21 +149,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Stack(
               children: [
                 Container(
-                  width: 40, height: 40,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: AppColors.parchment,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.border),
                   ),
                   child: const Icon(Icons.notifications_outlined,
-                    size: 20, color: AppColors.forest),
+                      size: 20, color: AppColors.forest),
                 ),
                 Positioned(
-                  top: 6, right: 6,
+                  top: 6,
+                  right: 6,
                   child: Container(
-                    width: 8, height: 8,
+                    width: 8,
+                    height: 8,
                     decoration: const BoxDecoration(
-                      color: AppColors.amber, shape: BoxShape.circle,
+                      color: AppColors.amber,
+                      shape: BoxShape.circle,
                     ),
                   ),
                 ),
@@ -167,7 +178,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           GestureDetector(
             onTap: () {},
             child: Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [AppColors.leaf, AppColors.amber],
@@ -175,7 +187,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(
-                child: Text('MR',
+                child: Text(
+                  'MR',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -225,22 +238,23 @@ class _WeatherBar extends StatelessWidget {
                       const SizedBox(width: 12),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(data.condition,
-                          style: AppTextStyles.body(
-                            11, weight: FontWeight.w600,
-                            color: Colors.white.withOpacity(0.9),
-                          )),
+                            style: AppTextStyles.body(
+                              11,
+                              weight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.9),
+                            )),
                       ),
                     ],
                   ),
                   Text('📍 Quezon City Garden Zone',
-                    style: AppTextStyles.body(
-                      11, color: Colors.white.withOpacity(0.6))),
+                      style: AppTextStyles.body(11,
+                          color: Colors.white.withOpacity(0.6))),
                 ],
               ),
             ],
@@ -277,7 +291,8 @@ class _WeatherBar extends StatelessWidget {
                   child: Text(
                     data.tip,
                     style: AppTextStyles.body(
-                      12, color: Colors.white.withOpacity(0.85),
+                      12,
+                      color: Colors.white.withOpacity(0.85),
                     ),
                   ),
                 ),
@@ -302,14 +317,16 @@ class _WeatherStat extends StatelessWidget {
           Text(emoji, style: const TextStyle(fontSize: 14)),
           const SizedBox(height: 2),
           Text(value,
-            style: AppTextStyles.mono(
-              size: 12, weight: FontWeight.w600,
-              color: Colors.white,
-            )),
+              style: AppTextStyles.mono(
+                size: 12,
+                weight: FontWeight.w600,
+                color: Colors.white,
+              )),
           Text(label,
-            style: AppTextStyles.body(
-              9, color: Colors.white.withOpacity(0.55),
-            )),
+              style: AppTextStyles.body(
+                9,
+                color: Colors.white.withOpacity(0.55),
+              )),
         ],
       ),
     );
@@ -319,9 +336,10 @@ class _WeatherStat extends StatelessWidget {
 class _WeatherDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-    width: 1, height: 36,
-    color: Colors.white.withOpacity(0.15),
-  );
+        width: 1,
+        height: 36,
+        color: Colors.white.withOpacity(0.15),
+      );
 }
 
 // ── KPI GRID ─────────────────────────────────────────
@@ -336,8 +354,10 @@ class _KpiGrid extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _KpiCard(
-              emoji: '🌱', label: 'Active Crops',
+            Expanded(
+                child: _KpiCard(
+              emoji: '🌱',
+              label: 'Active Crops',
               value: stats.activeCrops.toString(),
               sub: '${stats.totalCrops} total planted',
               color: AppColors.leaf,
@@ -345,8 +365,10 @@ class _KpiGrid extends StatelessWidget {
               trendUp: true,
             ).animate(delay: 100.ms).fadeIn().slideY(begin: 0.2)),
             const SizedBox(width: 12),
-            Expanded(child: _KpiCard(
-              emoji: '⚖️', label: 'Season Yield',
+            Expanded(
+                child: _KpiCard(
+              emoji: '⚖️',
+              label: 'Season Yield',
               value: '${stats.totalHarvestKg}kg',
               sub: 'Goal: ${stats.seasonGoalKg}kg',
               color: AppColors.amber,
@@ -358,8 +380,10 @@ class _KpiGrid extends StatelessWidget {
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _KpiCard(
-              emoji: '🌾', label: 'Near Harvest',
+            Expanded(
+                child: _KpiCard(
+              emoji: '🌾',
+              label: 'Near Harvest',
               value: '5',
               sub: 'Next: Tomatoes in 3d',
               color: AppColors.amber,
@@ -367,8 +391,10 @@ class _KpiGrid extends StatelessWidget {
               trendUp: true,
             ).animate(delay: 200.ms).fadeIn().slideY(begin: 0.2)),
             const SizedBox(width: 12),
-            Expanded(child: _KpiCard(
-              emoji: '⚠️', label: 'Need Attention',
+            Expanded(
+                child: _KpiCard(
+              emoji: '⚠️',
+              label: 'Need Attention',
               value: '2',
               sub: 'Kale · Basil',
               color: AppColors.red,
@@ -388,9 +414,12 @@ class _KpiCard extends StatelessWidget {
   final bool trendUp;
 
   const _KpiCard({
-    required this.emoji, required this.label,
-    required this.value, required this.sub,
-    required this.color, required this.trend,
+    required this.emoji,
+    required this.label,
+    required this.value,
+    required this.sub,
+    required this.color,
+    required this.trend,
     required this.trendUp,
   });
 
@@ -410,7 +439,8 @@ class _KpiCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
@@ -421,9 +451,8 @@ class _KpiCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: trendUp
-                    ? AppColors.successLight
-                    : AppColors.errorLight,
+                  color:
+                      trendUp ? AppColors.successLight : AppColors.errorLight,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -438,15 +467,16 @@ class _KpiCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(value,
-            style: AppTextStyles.display(24, color: AppColors.forest)),
+              style: AppTextStyles.display(24, color: AppColors.forest)),
           const SizedBox(height: 2),
           Text(label,
-            style: AppTextStyles.body(
-              12, weight: FontWeight.w600, color: AppColors.slateMid,
-            )),
+              style: AppTextStyles.body(
+                12,
+                weight: FontWeight.w600,
+                color: AppColors.slateMid,
+              )),
           const SizedBox(height: 4),
-          Text(sub,
-            style: AppTextStyles.body(11, color: AppColors.slateLight)),
+          Text(sub, style: AppTextStyles.body(11, color: AppColors.slateLight)),
         ],
       ),
     );
@@ -465,7 +495,7 @@ class _HarvestChartState extends State<_HarvestChart> {
 
   @override
   Widget build(BuildContext context) {
-    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
     final data2024 = [2.1, 1.8, 3.4, 5.2, 6.8, 8.4, 0.0, 0.0];
     final data2023 = [1.6, 1.4, 2.8, 4.1, 5.5, 6.9, 7.2, 6.4];
 
@@ -485,15 +515,18 @@ class _HarvestChartState extends State<_HarvestChart> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Harvest Yield',
-                    style: Theme.of(context).textTheme.titleLarge),
+                      style: Theme.of(context).textTheme.titleLarge),
                   Text('Monthly kg comparison',
-                    style: Theme.of(context).textTheme.bodySmall),
+                      style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
               const Spacer(),
-              _PeriodChip('Week',  0, _selectedPeriod, () => setState(()=>_selectedPeriod=0)),
-              _PeriodChip('Month', 1, _selectedPeriod, () => setState(()=>_selectedPeriod=1)),
-              _PeriodChip('Year',  2, _selectedPeriod, () => setState(()=>_selectedPeriod=2)),
+              _PeriodChip('Week', 0, _selectedPeriod,
+                  () => setState(() => _selectedPeriod = 0)),
+              _PeriodChip('Month', 1, _selectedPeriod,
+                  () => setState(() => _selectedPeriod = 1)),
+              _PeriodChip('Year', 2, _selectedPeriod,
+                  () => setState(() => _selectedPeriod = 2)),
             ],
           ),
           const SizedBox(height: 20),
@@ -514,24 +547,26 @@ class _HarvestChartState extends State<_HarvestChart> {
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
                 maxY: 12,
-                barGroups: List.generate(8, (i) => BarChartGroupData(
-                  x: i,
-                  barRods: [
-                    BarChartRodData(
-                      toY: data2024[i],
-                      color: AppColors.leaf,
-                      width: 8,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    BarChartRodData(
-                      toY: data2023[i],
-                      color: AppColors.amber.withOpacity(0.6),
-                      width: 8,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ],
-                  barsSpace: 4,
-                )),
+                barGroups: List.generate(
+                    8,
+                    (i) => BarChartGroupData(
+                          x: i,
+                          barRods: [
+                            BarChartRodData(
+                              toY: data2024[i],
+                              color: AppColors.leaf,
+                              width: 8,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            BarChartRodData(
+                              toY: data2023[i],
+                              color: AppColors.amber.withOpacity(0.6),
+                              width: 8,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ],
+                          barsSpace: 4,
+                        )),
                 gridData: FlGridData(
                   show: true,
                   horizontalInterval: 3,
@@ -550,7 +585,8 @@ class _HarvestChartState extends State<_HarvestChart> {
                       reservedSize: 32,
                       getTitlesWidget: (v, _) => Text(
                         '${v.toInt()}',
-                        style: AppTextStyles.body(10, color: AppColors.slateLight),
+                        style:
+                            AppTextStyles.body(10, color: AppColors.slateLight),
                       ),
                     ),
                   ),
@@ -559,14 +595,15 @@ class _HarvestChartState extends State<_HarvestChart> {
                       showTitles: true,
                       getTitlesWidget: (v, _) => Text(
                         months[v.toInt()],
-                        style: AppTextStyles.body(10, color: AppColors.slateLight),
+                        style:
+                            AppTextStyles.body(10, color: AppColors.slateLight),
                       ),
                     ),
                   ),
                   topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                      sideTitles: SideTitles(showTitles: false)),
                   rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                      sideTitles: SideTitles(showTitles: false)),
                 ),
               ),
             ),
@@ -596,10 +633,11 @@ class _PeriodChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(label,
-          style: AppTextStyles.body(
-            11, weight: FontWeight.w600,
-            color: isSelected ? Colors.white : AppColors.slateLight,
-          )),
+            style: AppTextStyles.body(
+              11,
+              weight: FontWeight.w600,
+              color: isSelected ? Colors.white : AppColors.slateLight,
+            )),
       ),
     );
   }
@@ -615,8 +653,10 @@ class _ChartLegend extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 12, height: 12,
-          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+              color: color, borderRadius: BorderRadius.circular(3)),
         ),
         const SizedBox(width: 6),
         Text(label, style: AppTextStyles.body(11, color: AppColors.slateMid)),
@@ -666,10 +706,10 @@ class _CropCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: crop.status == CropStatus.concern
-              ? AppColors.red.withOpacity(0.4)
-              : crop.status == CropStatus.readyToHarvest
-                ? AppColors.amber.withOpacity(0.4)
-                : AppColors.border,
+                ? AppColors.red.withOpacity(0.4)
+                : crop.status == CropStatus.readyToHarvest
+                    ? AppColors.amber.withOpacity(0.4)
+                    : AppColors.border,
           ),
           boxShadow: [AppShadows.subtle],
         ),
@@ -682,7 +722,8 @@ class _CropCard extends StatelessWidget {
               children: [
                 Text(crop.emoji, style: const TextStyle(fontSize: 28)),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: crop.status.bgColor,
                     borderRadius: BorderRadius.circular(20),
@@ -696,16 +737,21 @@ class _CropCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            Text(crop.name,
+            Text(
+              crop.name,
               style: AppTextStyles.body(
-                13, weight: FontWeight.w700, color: AppColors.forest,
+                13,
+                weight: FontWeight.w700,
+                color: AppColors.forest,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            Text(crop.variety,
+            Text(
+              crop.variety,
               style: AppTextStyles.body(10, color: AppColors.slateLight),
-              maxLines: 1, overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 10),
 
@@ -726,27 +772,28 @@ class _CropCard extends StatelessWidget {
               children: [
                 Text(
                   crop.daysToHarvest > 0
-                    ? '${crop.daysToHarvest}d left'
-                    : 'Overdue!',
+                      ? '${crop.daysToHarvest}d left'
+                      : 'Overdue!',
                   style: AppTextStyles.mono(
                     size: 10,
                     color: crop.daysToHarvest <= 0
-                      ? AppColors.red
-                      : AppColors.slateLight,
+                        ? AppColors.red
+                        : AppColors.slateLight,
                   ),
                 ),
                 Text(crop.estimatedYieldKg.toStringAsFixed(1) + 'kg',
-                  style: AppTextStyles.mono(
-                    size: 10, color: AppColors.leaf,
-                  )),
+                    style: AppTextStyles.mono(
+                      size: 10,
+                      color: AppColors.leaf,
+                    )),
               ],
             ),
           ],
         ),
       )
-      .animate(delay: Duration(milliseconds: 80 * index))
-      .fadeIn(duration: 300.ms)
-      .slideX(begin: 0.1),
+          .animate(delay: Duration(milliseconds: 80 * index))
+          .fadeIn(duration: 300.ms)
+          .slideX(begin: 0.1),
     );
   }
 }
@@ -756,9 +803,7 @@ class _CropCard extends StatelessWidget {
 class _UpcomingHarvestsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final upcoming = MockData.crops
-      .where((c) => c.isNearHarvest)
-      .toList()
+    final upcoming = MockData.crops.where((c) => c.isNearHarvest).toList()
       ..sort((a, b) => a.daysToHarvest.compareTo(b.daysToHarvest));
 
     return Container(
@@ -774,7 +819,7 @@ class _UpcomingHarvestsCard extends StatelessWidget {
           Row(
             children: [
               Text('Upcoming Harvests',
-                style: Theme.of(context).textTheme.titleLarge),
+                  style: Theme.of(context).textTheme.titleLarge),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -783,9 +828,11 @@ class _UpcomingHarvestsCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text('${upcoming.length} ready',
-                  style: AppTextStyles.body(
-                    10, weight: FontWeight.w700, color: AppColors.success,
-                  )),
+                    style: AppTextStyles.body(
+                      10,
+                      weight: FontWeight.w700,
+                      color: AppColors.success,
+                    )),
               ),
             ],
           ),
@@ -808,7 +855,8 @@ class _HarvestItem extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 48, height: 48,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: AppColors.parchment,
               borderRadius: BorderRadius.circular(12),
@@ -823,8 +871,8 @@ class _HarvestItem extends StatelessWidget {
                 ),
                 Text(
                   _monthAbbr(crop.expectedHarvestDate.month),
-                  style: AppTextStyles.body(8, weight: FontWeight.w700,
-                    color: AppColors.slateLight),
+                  style: AppTextStyles.body(8,
+                      weight: FontWeight.w700, color: AppColors.slateLight),
                 ),
               ],
             ),
@@ -837,11 +885,14 @@ class _HarvestItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(crop.name,
-                  style: AppTextStyles.body(
-                    13, weight: FontWeight.w700, color: AppColors.forest,
-                  )),
-                Text('${crop.plotId.replaceAll('_', ' ').toUpperCase()} · ~${crop.estimatedYieldKg}kg expected',
-                  style: AppTextStyles.body(10, color: AppColors.slateLight)),
+                    style: AppTextStyles.body(
+                      13,
+                      weight: FontWeight.w700,
+                      color: AppColors.forest,
+                    )),
+                Text(
+                    '${crop.plotId.replaceAll('_', ' ').toUpperCase()} · ~${crop.estimatedYieldKg}kg expected',
+                    style: AppTextStyles.body(10, color: AppColors.slateLight)),
               ],
             ),
           ),
@@ -850,20 +901,17 @@ class _HarvestItem extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: crop.daysToHarvest <= 3
-                ? AppColors.amberPale
-                : AppColors.paleGreen,
+                  ? AppColors.amberPale
+                  : AppColors.paleGreen,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              crop.daysToHarvest == 0
-                ? 'Today!'
-                : '${crop.daysToHarvest}d',
+              crop.daysToHarvest == 0 ? 'Today!' : '${crop.daysToHarvest}d',
               style: AppTextStyles.mono(
                 size: 11,
                 weight: FontWeight.w700,
-                color: crop.daysToHarvest <= 3
-                  ? AppColors.amber
-                  : AppColors.leaf,
+                color:
+                    crop.daysToHarvest <= 3 ? AppColors.amber : AppColors.leaf,
               ),
             ),
           ),
@@ -873,8 +921,21 @@ class _HarvestItem extends StatelessWidget {
   }
 
   String _monthAbbr(int m) {
-    const months = ['','JAN','FEB','MAR','APR','MAY','JUN',
-      'JUL','AUG','SEP','OCT','NOV','DEC'];
+    const months = [
+      '',
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC'
+    ];
     return months[m];
   }
 }
@@ -903,21 +964,22 @@ class _DestinationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Produce Destination',
-            style: Theme.of(context).textTheme.titleMedium),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
-          Text('This season',
-            style: Theme.of(context).textTheme.bodySmall),
+          Text('This season', style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 14),
           SizedBox(
             height: 100,
             child: PieChart(
               PieChartData(
-                sections: data.map((d) => PieChartSectionData(
-                  value: d.pct,
-                  color: d.color,
-                  radius: 30,
-                  showTitle: false,
-                )).toList(),
+                sections: data
+                    .map((d) => PieChartSectionData(
+                          value: d.pct,
+                          color: d.color,
+                          radius: 30,
+                          showTitle: false,
+                        ))
+                    .toList(),
                 centerSpaceRadius: 28,
                 sectionsSpace: 2,
               ),
@@ -925,23 +987,27 @@ class _DestinationCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ...data.map((d) => Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Row(
-              children: [
-                Container(
-                  width: 8, height: 8,
-                  decoration: BoxDecoration(
-                    color: d.color, shape: BoxShape.circle,
-                  ),
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: d.color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                        child: Text(d.label,
+                            style: AppTextStyles.body(10,
+                                color: AppColors.slateMid))),
+                    Text('${d.pct.toInt()}%',
+                        style: AppTextStyles.mono(10, color: AppColors.forest)),
+                  ],
                 ),
-                const SizedBox(width: 6),
-                Expanded(child: Text(d.label,
-                  style: AppTextStyles.body(10, color: AppColors.slateMid))),
-                Text('${d.pct.toInt()}%',
-                  style: AppTextStyles.mono(size: 10, color: AppColors.forest)),
-              ],
-            ),
-          )),
+              )),
         ],
       ),
     );
@@ -974,11 +1040,9 @@ class _SeasonProgressCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Season Goal',
-            style: Theme.of(context).textTheme.titleMedium),
+          Text('Season Goal', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
-          Text('Jun 2024',
-            style: Theme.of(context).textTheme.bodySmall),
+          Text('Jun 2024', style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 16),
 
           // Big progress number
@@ -987,7 +1051,7 @@ class _SeasonProgressCard extends StatelessWidget {
             style: AppTextStyles.display(28, color: AppColors.forest),
           ),
           Text('of ${stats.seasonGoalKg} kg',
-            style: AppTextStyles.body(11, color: AppColors.slateLight)),
+              style: AppTextStyles.body(11, color: AppColors.slateLight)),
 
           const SizedBox(height: 12),
 
@@ -1002,7 +1066,7 @@ class _SeasonProgressCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text('${(progress * 100).toInt()}% of goal reached',
-            style: AppTextStyles.mono(size: 10, color: AppColors.leaf)),
+              style: AppTextStyles.mono(10, color: AppColors.leaf)),
 
           const SizedBox(height: 14),
 
@@ -1029,12 +1093,14 @@ class _StatRow extends StatelessWidget {
           Text(emoji, style: const TextStyle(fontSize: 12)),
           const SizedBox(width: 6),
           Text(label,
-            style: AppTextStyles.body(11, color: AppColors.slateLight)),
+              style: AppTextStyles.body(11, color: AppColors.slateLight)),
           const Spacer(),
           Text(value,
-            style: AppTextStyles.body(
-              11, weight: FontWeight.w700, color: AppColors.forest,
-            )),
+              style: AppTextStyles.body(
+                11,
+                weight: FontWeight.w700,
+                color: AppColors.forest,
+              )),
         ],
       ),
     );
@@ -1060,7 +1126,7 @@ class _ActivityFeed extends StatelessWidget {
           Row(
             children: [
               Text('Recent Activity',
-                style: Theme.of(context).textTheme.titleLarge),
+                  style: Theme.of(context).textTheme.titleLarge),
               const Spacer(),
               TextButton(onPressed: () {}, child: const Text('See All')),
             ],
@@ -1086,14 +1152,14 @@ class _ActivityItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 36, height: 36,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: log.type.color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
-              child: Text(log.type.emoji,
-                style: const TextStyle(fontSize: 16)),
+              child: Text(log.type.emoji, style: const TextStyle(fontSize: 16)),
             ),
           ),
           const SizedBox(width: 10),
@@ -1101,16 +1167,19 @@ class _ActivityItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(log.description,
+                Text(
+                  log.description,
                   style: AppTextStyles.body(
-                    12, weight: FontWeight.w500, color: AppColors.slate,
+                    12,
+                    weight: FontWeight.w500,
+                    color: AppColors.slate,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(timeAgo,
-                  style: AppTextStyles.body(11, color: AppColors.slateLight)),
+                    style: AppTextStyles.body(11, color: AppColors.slateLight)),
               ],
             ),
           ),
@@ -1122,8 +1191,8 @@ class _ActivityItem extends StatelessWidget {
   String _timeAgo(DateTime dt) {
     final diff = DateTime.now().difference(dt);
     if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24)   return '${diff.inHours}h ago';
-    if (diff.inDays < 7)     return '${diff.inDays}d ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
     return '${dt.day}/${dt.month}';
   }
 }
