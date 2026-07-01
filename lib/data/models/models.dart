@@ -1,542 +1,608 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+// GreenTrack core domain models
+// Covers: Users (Farmer/Chef/Consumer), CropBatch, TransportRecord, Meal,
+// NutritionReference, MealNutritionSnapshot, Allergen, MealAllergen,
+// QRCode, Notifications.
+//
+// These are plain Dart model classes (fromJson/toJson included) so they map
+// cleanly onto Firestore documents later. MockData at the bottom seeds a
+// realistic, interconnected dataset for screen-building before real
+// persistence is wired in via Riverpod providers.
 
-// ── ENUMS ──────────────────────────────────────────────
+import 'package:flutter/foundation.dart';
 
-enum UserRole { farmer, shopper, chef, diner }
+// ---------------------------------------------------------------------------
+// ENUMS
+// ---------------------------------------------------------------------------
 
-enum CropBatchStatus {
+enum UserRole { farmer, chef, consumer }
+
+enum CropStage {
+  planned,
   planted,
-  growing,
-  pestTreatment,
-  phiCountdown,
+  sprouting,
+  vegetative,
+  flowering,
+  fruiting,
   readyToHarvest,
   harvested,
-  delivered;
+  concern,
+  failed,
+}
 
+enum FarmingMethod { organic, conventional, hydroponic, permaculture, agroforestry }
+
+enum SunExposure { fullSun, partialSun, shade }
+
+enum IrrigationSource { rain, borehole, municipal, river, storedTank }
+
+enum PestSeverity { low, moderate, severe }
+
+enum HarvestDestination { consumed, sold, donated, stored, composted }
+
+enum TransportMode { road, rail, air, sea }
+
+enum NotificationType {
+  phiCountdown,
+  harvestReminder,
+  buyerAvailability,
+  chefInventoryAlert,
+  scanConfirmation,
+  general,
+}
+
+// 14 EU/UK recognized major allergens, plus "none".
+enum AllergenType {
+  gluten,
+  milk,
+  eggs,
+  peanuts,
+  treeNuts,
+  soybeans,
+  fish,
+  crustaceans,
+  molluscs,
+  sesame,
+  mustard,
+  celery,
+  lupin,
+  sulphites,
+  none,
+}
+
+extension AllergenTypeLabel on AllergenType {
   String get label {
     switch (this) {
-      case CropBatchStatus.planted:
-        return 'Planted';
-      case CropBatchStatus.growing:
-        return 'Growing';
-      case CropBatchStatus.pestTreatment:
-        return 'Pest Treatment Active';
-      case CropBatchStatus.phiCountdown:
-        return 'PHI Countdown';
-      case CropBatchStatus.readyToHarvest:
-        return 'Ready to Harvest';
-      case CropBatchStatus.harvested:
-        return 'Harvested';
-      case CropBatchStatus.delivered:
-        return 'Delivered';
+      case AllergenType.gluten:
+        return 'Cereals containing gluten';
+      case AllergenType.milk:
+        return 'Milk (Dairy)';
+      case AllergenType.eggs:
+        return 'Eggs';
+      case AllergenType.peanuts:
+        return 'Peanuts';
+      case AllergenType.treeNuts:
+        return 'Tree nuts';
+      case AllergenType.soybeans:
+        return 'Soybeans (Soy)';
+      case AllergenType.fish:
+        return 'Fish';
+      case AllergenType.crustaceans:
+        return 'Crustaceans';
+      case AllergenType.molluscs:
+        return 'Molluscs';
+      case AllergenType.sesame:
+        return 'Sesame';
+      case AllergenType.mustard:
+        return 'Mustard';
+      case AllergenType.celery:
+        return 'Celery';
+      case AllergenType.lupin:
+        return 'Lupin';
+      case AllergenType.sulphites:
+        return 'Sulphites/Sulfur dioxide';
+      case AllergenType.none:
+        return 'None';
     }
   }
-
-  Color get color {
-    switch (this) {
-      case CropBatchStatus.planted:
-        return const Color(0xFF2B6CB0);
-      case CropBatchStatus.growing:
-        return const Color(0xFF2E7D32);
-      case CropBatchStatus.pestTreatment:
-        return const Color(0xFFE65100);
-      case CropBatchStatus.phiCountdown:
-        return const Color(0xFFB83232);
-      case CropBatchStatus.readyToHarvest:
-        return const Color(0xFFD4880A);
-      case CropBatchStatus.harvested:
-        return const Color(0xFF1A2E1A);
-      case CropBatchStatus.delivered:
-        return const Color(0xFF6B3FA0);
-    }
-  }
-
-  String get emoji {
-    switch (this) {
-      case CropBatchStatus.planted:
-        return '🌱';
-      case CropBatchStatus.growing:
-        return '🌿';
-      case CropBatchStatus.pestTreatment:
-        return '🐛';
-      case CropBatchStatus.phiCountdown:
-        return '⏱️';
-      case CropBatchStatus.readyToHarvest:
-        return '🌾';
-      case CropBatchStatus.harvested:
-        return '✅';
-      case CropBatchStatus.delivered:
-        return '🚚';
-    }
-  }
-
-  Color get bgColor => color.withOpacity(0.1);
-
-  static CropBatchStatus fromString(String s) => CropBatchStatus.values
-      .firstWhere((e) => e.name == s, orElse: () => CropBatchStatus.planted);
 }
 
-enum FarmingMethod {
-  organic,
-  conventional,
-  hydroponics,
-  permaculture,
-  biodynamic;
+// ---------------------------------------------------------------------------
+// USER
+// ---------------------------------------------------------------------------
 
-  String get label {
-    switch (this) {
-      case FarmingMethod.organic:
-        return 'Certified Organic';
-      case FarmingMethod.conventional:
-        return 'Conventional';
-      case FarmingMethod.hydroponics:
-        return 'Hydroponics';
-      case FarmingMethod.permaculture:
-        return 'Permaculture';
-      case FarmingMethod.biodynamic:
-        return 'Biodynamic';
-    }
-  }
-
-  static FarmingMethod fromString(String s) => FarmingMethod.values
-      .firstWhere((e) => e.name == s, orElse: () => FarmingMethod.conventional);
-}
-
-enum WaterSource {
-  borehole,
-  rainwater,
-  municipal,
-  river,
-  drip;
-
-  String get label {
-    switch (this) {
-      case WaterSource.borehole:
-        return 'Borehole';
-      case WaterSource.rainwater:
-        return 'Rainwater Harvesting';
-      case WaterSource.municipal:
-        return 'Municipal Supply';
-      case WaterSource.river:
-        return 'River / Stream';
-      case WaterSource.drip:
-        return 'Drip Irrigation';
-    }
-  }
-
-  static WaterSource fromString(String s) => WaterSource.values
-      .firstWhere((e) => e.name == s, orElse: () => WaterSource.municipal);
-}
-
-// ── FARMER PROFILE ────────────────────────────────────
-
-class FarmerProfile {
-  final String uid, name, email, farmName, location;
-  final double latitude, longitude;
-  final String? certificationNumber, photoUrl;
-  final List<FarmingMethod> methods;
-  final DateTime createdAt;
-
-  const FarmerProfile({
-    required this.uid,
-    required this.name,
-    required this.email,
-    required this.farmName,
-    required this.location,
-    this.latitude = 0,
-    this.longitude = 0,
-    this.certificationNumber,
-    this.photoUrl,
-    this.methods = const [FarmingMethod.conventional],
-    required this.createdAt,
-  });
-
-  factory FarmerProfile.fromFirestore(DocumentSnapshot doc) {
-    final d = doc.data() as Map<String, dynamic>;
-    return FarmerProfile(
-      uid: doc.id,
-      name: d['name'] ?? '',
-      email: d['email'] ?? '',
-      farmName: d['farmName'] ?? '',
-      location: d['location'] ?? '',
-      latitude: (d['latitude'] ?? 0).toDouble(),
-      longitude: (d['longitude'] ?? 0).toDouble(),
-      certificationNumber: d['certificationNumber'],
-      photoUrl: d['photoUrl'],
-      methods: (d['methods'] as List<dynamic>? ?? [])
-          .map((m) => FarmingMethod.fromString(m.toString()))
-          .toList(),
-      createdAt: (d['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-    );
-  }
-
-  Map<String, dynamic> toFirestore() => {
-        'name': name,
-        'email': email,
-        'farmName': farmName,
-        'location': location,
-        'latitude': latitude,
-        'longitude': longitude,
-        'certificationNumber': certificationNumber,
-        'photoUrl': photoUrl,
-        'methods': methods.map((m) => m.name).toList(),
-        'createdAt': Timestamp.fromDate(createdAt),
-        'role': 'farmer',
-      };
-}
-
-// ── CROP BATCH ────────────────────────────────────────
-
-class CropBatch {
-  final String id, farmerId, cropName, variety, plotLocation;
-  final double latitude, longitude;
-  final FarmingMethod farmingMethod;
-  final CropBatchStatus status;
-  final DateTime plantedDate, expectedHarvestDate;
-  final DateTime? actualHarvestDate, deliveredDate;
-  final double estimatedYieldKg, actualYieldKg;
-  final int quantityPlanted;
-  final String? notes, qrCodeData;
-  final List<String> photoUrls;
-  final List<IrrigationLog> irrigationLogs;
-  final List<PestLog> pestLogs;
-  final PestTreatment? activeTreatment;
-  final DateTime createdAt, updatedAt;
-  final String? buyerAlertSent;
-  final NutritionInfo? nutrition;
-
-  const CropBatch({
-    required this.id,
-    required this.farmerId,
-    required this.cropName,
-    required this.variety,
-    required this.plotLocation,
-    this.latitude = 0,
-    this.longitude = 0,
-    required this.farmingMethod,
-    required this.status,
-    required this.plantedDate,
-    required this.expectedHarvestDate,
-    this.actualHarvestDate,
-    this.deliveredDate,
-    required this.estimatedYieldKg,
-    this.actualYieldKg = 0,
-    required this.quantityPlanted,
-    this.notes,
-    this.qrCodeData,
-    this.photoUrls = const [],
-    this.irrigationLogs = const [],
-    this.pestLogs = const [],
-    this.activeTreatment,
-    required this.createdAt,
-    required this.updatedAt,
-    this.buyerAlertSent,
-    this.nutrition,
-  });
-
-  factory CropBatch.fromFirestore(DocumentSnapshot doc) {
-    final d = doc.data() as Map<String, dynamic>;
-    return CropBatch(
-      id: doc.id,
-      farmerId: d['farmerId'] ?? '',
-      cropName: d['cropName'] ?? '',
-      variety: d['variety'] ?? '',
-      plotLocation: d['plotLocation'] ?? '',
-      latitude: (d['latitude'] ?? 0).toDouble(),
-      longitude: (d['longitude'] ?? 0).toDouble(),
-      farmingMethod:
-          FarmingMethod.fromString(d['farmingMethod'] ?? 'conventional'),
-      status: CropBatchStatus.fromString(d['status'] ?? 'planted'),
-      plantedDate: (d['plantedDate'] as Timestamp).toDate(),
-      expectedHarvestDate: (d['expectedHarvestDate'] as Timestamp).toDate(),
-      actualHarvestDate: (d['actualHarvestDate'] as Timestamp?)?.toDate(),
-      deliveredDate: (d['deliveredDate'] as Timestamp?)?.toDate(),
-      estimatedYieldKg: (d['estimatedYieldKg'] ?? 1.0).toDouble(),
-      actualYieldKg: (d['actualYieldKg'] ?? 0.0).toDouble(),
-      quantityPlanted: d['quantityPlanted'] ?? 1,
-      notes: d['notes'],
-      qrCodeData: d['qrCodeData'],
-      photoUrls: List<String>.from(d['photoUrls'] ?? []),
-      activeTreatment: d['activeTreatment'] != null
-          ? PestTreatment.fromMap(d['activeTreatment'])
-          : null,
-      nutrition:
-          d['nutrition'] != null ? NutritionInfo.fromMap(d['nutrition']) : null,
-      createdAt: (d['createdAt'] as Timestamp).toDate(),
-      updatedAt: (d['updatedAt'] as Timestamp).toDate(),
-      buyerAlertSent: d['buyerAlertSent'],
-    );
-  }
-
-  Map<String, dynamic> toFirestore() => {
-        'farmerId': farmerId,
-        'cropName': cropName,
-        'variety': variety,
-        'plotLocation': plotLocation,
-        'latitude': latitude,
-        'longitude': longitude,
-        'farmingMethod': farmingMethod.name,
-        'status': status.name,
-        'plantedDate': Timestamp.fromDate(plantedDate),
-        'expectedHarvestDate': Timestamp.fromDate(expectedHarvestDate),
-        'actualHarvestDate': actualHarvestDate != null
-            ? Timestamp.fromDate(actualHarvestDate!)
-            : null,
-        'deliveredDate':
-            deliveredDate != null ? Timestamp.fromDate(deliveredDate!) : null,
-        'estimatedYieldKg': estimatedYieldKg,
-        'actualYieldKg': actualYieldKg,
-        'quantityPlanted': quantityPlanted,
-        'notes': notes,
-        'qrCodeData': qrCodeData,
-        'photoUrls': photoUrls,
-        'activeTreatment': activeTreatment?.toMap(),
-        'nutrition': nutrition?.toMap(),
-        'createdAt': Timestamp.fromDate(createdAt),
-        'updatedAt': Timestamp.fromDate(updatedAt),
-        'buyerAlertSent': buyerAlertSent,
-      };
-
-  int get daysInGround => DateTime.now().difference(plantedDate).inDays;
-  int get daysToHarvest =>
-      expectedHarvestDate.difference(DateTime.now()).inDays;
-  bool get isOverdue =>
-      daysToHarvest < 0 && status != CropBatchStatus.harvested;
-  bool get phiActive =>
-      activeTreatment != null && status == CropBatchStatus.phiCountdown;
-  int get phiDaysRemaining {
-    if (activeTreatment == null) return 0;
-    final end = activeTreatment!.appliedAt
-        .add(Duration(days: activeTreatment!.phiDays));
-    return end.difference(DateTime.now()).inDays.clamp(0, 999);
-  }
-
-  bool get canHarvest =>
-      !phiActive &&
-      phiDaysRemaining == 0 &&
-      (status == CropBatchStatus.readyToHarvest ||
-          status == CropBatchStatus.growing);
-}
-
-// ── IRRIGATION LOG ────────────────────────────────────
-
-class IrrigationLog {
-  final String id;
-  final DateTime irrigatedAt;
-  final WaterSource source;
-  final double volumeLiters;
-  final int durationMinutes;
-  final String method;
-  final DateTime nextScheduled;
-
-  const IrrigationLog({
-    required this.id,
-    required this.irrigatedAt,
-    required this.source,
-    required this.volumeLiters,
-    required this.durationMinutes,
-    required this.method,
-    required this.nextScheduled,
-  });
-
-  factory IrrigationLog.fromMap(Map<String, dynamic> d) => IrrigationLog(
-        id: d['id'] ?? '',
-        irrigatedAt: (d['irrigatedAt'] as Timestamp).toDate(),
-        source: WaterSource.fromString(d['source'] ?? 'municipal'),
-        volumeLiters: (d['volumeLiters'] ?? 0).toDouble(),
-        durationMinutes: d['durationMinutes'] ?? 0,
-        method: d['method'] ?? '',
-        nextScheduled: (d['nextScheduled'] as Timestamp).toDate(),
-      );
-
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'irrigatedAt': Timestamp.fromDate(irrigatedAt),
-        'source': source.name,
-        'volumeLiters': volumeLiters,
-        'durationMinutes': durationMinutes,
-        'method': method,
-        'nextScheduled': Timestamp.fromDate(nextScheduled),
-      };
-}
-
-// ── PEST LOG ──────────────────────────────────────────
-
-class PestLog {
-  final String id, pestName, diagnosis, pesticide, applicationMethod;
-  final DateTime diagnosedAt;
-  final List<String> photoUrls;
-
-  const PestLog({
-    required this.id,
-    required this.pestName,
-    required this.diagnosis,
-    required this.pesticide,
-    required this.applicationMethod,
-    required this.diagnosedAt,
-    this.photoUrls = const [],
-  });
-
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'pestName': pestName,
-        'diagnosis': diagnosis,
-        'pesticide': pesticide,
-        'applicationMethod': applicationMethod,
-        'diagnosedAt': Timestamp.fromDate(diagnosedAt),
-        'photoUrls': photoUrls,
-      };
-}
-
-// ── PEST TREATMENT (PHI enforcer) ─────────────────────
-
-class PestTreatment {
-  final String pesticide, applicationMethod;
-  final DateTime appliedAt;
-  final int phiDays; // Pre-harvest interval in days
-
-  const PestTreatment({
-    required this.pesticide,
-    required this.applicationMethod,
-    required this.appliedAt,
-    required this.phiDays,
-  });
-
-  factory PestTreatment.fromMap(Map<String, dynamic> d) => PestTreatment(
-        pesticide: d['pesticide'] ?? '',
-        applicationMethod: d['applicationMethod'] ?? '',
-        appliedAt: (d['appliedAt'] as Timestamp).toDate(),
-        phiDays: d['phiDays'] ?? 7,
-      );
-
-  Map<String, dynamic> toMap() => {
-        'pesticide': pesticide,
-        'applicationMethod': applicationMethod,
-        'appliedAt': Timestamp.fromDate(appliedAt),
-        'phiDays': phiDays,
-      };
-
-  DateTime get clearDate => appliedAt.add(Duration(days: phiDays));
-  bool get isClear => DateTime.now().isAfter(clearDate);
-}
-
-// ── NUTRITION INFO ────────────────────────────────────
-
-class NutritionInfo {
-  final double caloriesPer100g, proteinG, carbsG, fibreG, fatG;
-  final Map<String, double> vitamins;
-
-  const NutritionInfo({
-    required this.caloriesPer100g,
-    required this.proteinG,
-    required this.carbsG,
-    required this.fibreG,
-    required this.fatG,
-    this.vitamins = const {},
-  });
-
-  factory NutritionInfo.fromMap(Map<String, dynamic> d) => NutritionInfo(
-        caloriesPer100g: (d['caloriesPer100g'] ?? 0).toDouble(),
-        proteinG: (d['proteinG'] ?? 0).toDouble(),
-        carbsG: (d['carbsG'] ?? 0).toDouble(),
-        fibreG: (d['fibreG'] ?? 0).toDouble(),
-        fatG: (d['fatG'] ?? 0).toDouble(),
-        vitamins: Map<String, double>.from(d['vitamins'] ?? {}),
-      );
-
-  Map<String, dynamic> toMap() => {
-        'caloriesPer100g': caloriesPer100g,
-        'proteinG': proteinG,
-        'carbsG': carbsG,
-        'fibreG': fibreG,
-        'fatG': fatG,
-        'vitamins': vitamins,
-      };
-}
-
-// ── BATCH QR SCAN RESULT ─────────────────────────────
-
-class BatchTraceResult {
-  final String batchId, cropName, variety, farmName, farmerName, farmLocation;
-  final double latitude, longitude;
-  final FarmingMethod farmingMethod;
-  final DateTime harvestedAt;
-  final double actualYieldKg;
-  final bool isOrganicCertified, phiCompliant;
-  final String? certificationNumber;
-  final NutritionInfo? nutrition;
-  final List<TransitEvent> transitEvents;
-
-  const BatchTraceResult({
-    required this.batchId,
-    required this.cropName,
-    required this.variety,
-    required this.farmName,
-    required this.farmerName,
-    required this.farmLocation,
-    this.latitude = 0,
-    this.longitude = 0,
-    required this.farmingMethod,
-    required this.harvestedAt,
-    required this.actualYieldKg,
-    this.isOrganicCertified = false,
-    this.phiCompliant = true,
-    this.certificationNumber,
-    this.nutrition,
-    this.transitEvents = const [],
-  });
-}
-
-class TransitEvent {
-  final String location, description;
-  final DateTime timestamp;
-  final String emoji;
-
-  const TransitEvent({
-    required this.location,
-    required this.description,
-    required this.timestamp,
-    required this.emoji,
-  });
-}
-
-// ── USER ACCOUNT ──────────────────────────────────────
-
+@immutable
 class AppUser {
-  final String uid, name, email;
+  final String id;
+  final String name;
+  final String email;
   final UserRole role;
   final String? photoUrl;
-  final DateTime createdAt;
+  // Role-specific extras
+  final String? farmName; // farmer
+  final String? restaurantName; // chef
+  final String? organicCertificationUrl; // farmer
 
   const AppUser({
-    required this.uid,
+    required this.id,
     required this.name,
     required this.email,
     required this.role,
     this.photoUrl,
-    required this.createdAt,
+    this.farmName,
+    this.restaurantName,
+    this.organicCertificationUrl,
   });
 
-  factory AppUser.fromFirestore(DocumentSnapshot doc) {
-    final d = doc.data() as Map<String, dynamic>;
-    return AppUser(
-      uid: doc.id,
-      name: d['name'] ?? '',
-      email: d['email'] ?? '',
-      role: UserRole.values.firstWhere(
-          (r) => r.name == (d['role'] ?? 'shopper'),
-          orElse: () => UserRole.shopper),
-      photoUrl: d['photoUrl'],
-      createdAt: (d['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-    );
-  }
+  factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        email: json['email'] as String,
+        role: UserRole.values.byName(json['role'] as String),
+        photoUrl: json['photoUrl'] as String?,
+        farmName: json['farmName'] as String?,
+        restaurantName: json['restaurantName'] as String?,
+        organicCertificationUrl: json['organicCertificationUrl'] as String?,
+      );
 
-  Map<String, dynamic> toFirestore() => {
+  Map<String, dynamic> toJson() => {
+        'id': id,
         'name': name,
         'email': email,
         'role': role.name,
         'photoUrl': photoUrl,
-        'createdAt': Timestamp.fromDate(createdAt),
+        'farmName': farmName,
+        'restaurantName': restaurantName,
+        'organicCertificationUrl': organicCertificationUrl,
       };
+}
+
+// ---------------------------------------------------------------------------
+// CROP BATCH  (Plan -> Plant -> Nurture -> Track -> Harvest)
+// ---------------------------------------------------------------------------
+
+class GeoPoint {
+  final double lat;
+  final double lng;
+  const GeoPoint(this.lat, this.lng);
+
+  factory GeoPoint.fromJson(Map<String, dynamic> json) =>
+      GeoPoint((json['lat'] as num).toDouble(), (json['lng'] as num).toDouble());
+  Map<String, dynamic> toJson() => {'lat': lat, 'lng': lng};
+}
+
+class IrrigationLog {
+  final String id;
+  final DateTime timestamp;
+  final IrrigationSource source;
+  final double liters;
+  final String? notes;
+
+  IrrigationLog({
+    required this.id,
+    required this.timestamp,
+    required this.source,
+    required this.liters,
+    this.notes,
+  });
+}
+
+class PestDiagnosis {
+  final String id;
+  final DateTime timestamp;
+  final String photoUrl;
+  final String detectedPest;
+  final PestSeverity severity;
+  final String recommendedPesticide;
+  final String applicationInstructions;
+  final int phiDays; // pre-harvest interval triggered by this treatment
+  final DateTime? treatedAt;
+
+  PestDiagnosis({
+    required this.id,
+    required this.timestamp,
+    required this.photoUrl,
+    required this.detectedPest,
+    required this.severity,
+    required this.recommendedPesticide,
+    required this.applicationInstructions,
+    required this.phiDays,
+    this.treatedAt,
+  });
+
+  /// Date after which harvest is safe, or null if untreated.
+  DateTime? get phiClearDate =>
+      treatedAt == null ? null : treatedAt!.add(Duration(days: phiDays));
+
+  bool get isHarvestLocked =>
+      phiClearDate != null && DateTime.now().isBefore(phiClearDate!);
+}
+
+class CropBatch {
+  final String id;
+  final String farmerId;
+  final String cropName;
+  final FarmingMethod farmingMethod;
+  final GeoPoint plotLocation;
+  final String? plotName;
+  final SunExposure sunExposure;
+  final CropStage stage;
+  final DateTime plannedDate;
+  final DateTime? plantedDate;
+  final List<IrrigationLog> irrigationLogs;
+  final List<PestDiagnosis> pestDiagnoses;
+  final double? estimatedYieldKg;
+  final DateTime? estimatedHarvestDate;
+  final double? verifiedWeightKg;
+  final DateTime? harvestedAt;
+  final String? harvestWeatherConditions;
+  final bool organicCertified;
+  final String? organicCertificationUrl;
+  final String? qrCodeId;
+
+  CropBatch({
+    required this.id,
+    required this.farmerId,
+    required this.cropName,
+    required this.farmingMethod,
+    required this.plotLocation,
+    this.plotName,
+    required this.sunExposure,
+    required this.stage,
+    required this.plannedDate,
+    this.plantedDate,
+    this.irrigationLogs = const [],
+    this.pestDiagnoses = const [],
+    this.estimatedYieldKg,
+    this.estimatedHarvestDate,
+    this.verifiedWeightKg,
+    this.harvestedAt,
+    this.harvestWeatherConditions,
+    this.organicCertified = false,
+    this.organicCertificationUrl,
+    this.qrCodeId,
+  });
+
+  /// True if any active pest treatment is still within its PHI window.
+  bool get harvestLockedByPHI =>
+      pestDiagnoses.any((p) => p.isHarvestLocked);
+
+  DateTime? get earliestPHIClearDate {
+    final dates = pestDiagnoses
+        .map((p) => p.phiClearDate)
+        .whereType<DateTime>()
+        .toList();
+    if (dates.isEmpty) return null;
+    dates.sort();
+    return dates.last;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TRANSPORT
+// ---------------------------------------------------------------------------
+
+class TransportRecord {
+  final String id;
+  final String cropBatchId;
+  final TransportMode mode;
+  final String originLabel;
+  final String destinationLabel;
+  final DateTime departedAt;
+  final DateTime? arrivedAt;
+  final String? carrierName;
+  final bool autoLogged;
+
+  TransportRecord({
+    required this.id,
+    required this.cropBatchId,
+    required this.mode,
+    required this.originLabel,
+    required this.destinationLabel,
+    required this.departedAt,
+    this.arrivedAt,
+    this.carrierName,
+    this.autoLogged = true,
+  });
+
+  Duration? get transitDuration =>
+      arrivedAt == null ? null : arrivedAt!.difference(departedAt);
+}
+
+// ---------------------------------------------------------------------------
+// NUTRITION
+// ---------------------------------------------------------------------------
+
+/// Per-100g nutrient density reference, keyed by crop name. Seeds the
+/// system-calculated nutrition for meals built from verified batches.
+class NutritionReference {
+  final String cropName;
+  final double caloriesPer100g;
+  final double proteinPer100g;
+  final double carbsPer100g;
+  final double fatPer100g;
+  final double fiberPer100g;
+
+  const NutritionReference({
+    required this.cropName,
+    required this.caloriesPer100g,
+    required this.proteinPer100g,
+    required this.carbsPer100g,
+    required this.fatPer100g,
+    required this.fiberPer100g,
+  });
+}
+
+class MealIngredient {
+  final String cropBatchId;
+  final String cropName;
+  final double quantityGrams;
+  MealIngredient({
+    required this.cropBatchId,
+    required this.cropName,
+    required this.quantityGrams,
+  });
+}
+
+/// Computed nutrition for a Meal — derived automatically from
+/// NutritionReference x ingredient quantities, never entered manually.
+class MealNutritionSnapshot {
+  final double calories;
+  final double proteinG;
+  final double carbsG;
+  final double fatG;
+  final double fiberG;
+
+  const MealNutritionSnapshot({
+    required this.calories,
+    required this.proteinG,
+    required this.carbsG,
+    required this.fatG,
+    required this.fiberG,
+  });
+
+  static MealNutritionSnapshot calculate(
+    List<MealIngredient> ingredients,
+    Map<String, NutritionReference> referenceByCrop,
+  ) {
+    double cal = 0, protein = 0, carbs = 0, fat = 0, fiber = 0;
+    for (final ing in ingredients) {
+      final ref = referenceByCrop[ing.cropName];
+      if (ref == null) continue;
+      final factor = ing.quantityGrams / 100.0;
+      cal += ref.caloriesPer100g * factor;
+      protein += ref.proteinPer100g * factor;
+      carbs += ref.carbsPer100g * factor;
+      fat += ref.fatPer100g * factor;
+      fiber += ref.fiberPer100g * factor;
+    }
+    return MealNutritionSnapshot(
+      calories: cal,
+      proteinG: protein,
+      carbsG: carbs,
+      fatG: fat,
+      fiberG: fiber,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ALLERGENS  (normalized: Allergen reference + MealAllergen join)
+// ---------------------------------------------------------------------------
+
+class Allergen {
+  final AllergenType type;
+  const Allergen(this.type);
+  String get label => type.label;
+}
+
+class MealAllergen {
+  final String mealId;
+  final AllergenType allergenId;
+  final bool contains;
+  final bool mayContain;
+  final String? notes;
+
+  MealAllergen({
+    required this.mealId,
+    required this.allergenId,
+    this.contains = false,
+    this.mayContain = false,
+    this.notes,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// MEAL  (Chef module)
+// ---------------------------------------------------------------------------
+
+class Meal {
+  final String id;
+  final String chefId;
+  final String restaurantName;
+  final String name;
+  final List<MealIngredient> ingredients;
+  final MealNutritionSnapshot nutrition;
+  final List<MealAllergen> allergens;
+  final String? otherAllergenNote;
+  final DateTime createdAt;
+  final String? qrCodeId;
+
+  Meal({
+    required this.id,
+    required this.chefId,
+    required this.restaurantName,
+    required this.name,
+    required this.ingredients,
+    required this.nutrition,
+    required this.allergens,
+    this.otherAllergenNote,
+    required this.createdAt,
+    this.qrCodeId,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// QR CODE  (shared resolver target for CropBatch or Meal)
+// ---------------------------------------------------------------------------
+
+enum QRTargetType { cropBatch, meal }
+
+class QRCodeRecord {
+  final String id; // encoded into the QR image itself
+  final QRTargetType targetType;
+  final String targetId; // cropBatchId or mealId
+  final DateTime generatedAt;
+
+  QRCodeRecord({
+    required this.id,
+    required this.targetType,
+    required this.targetId,
+    required this.generatedAt,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// NOTIFICATIONS
+// ---------------------------------------------------------------------------
+
+class AppNotification {
+  final String id;
+  final String userId;
+  final NotificationType type;
+  final String title;
+  final String body;
+  final DateTime createdAt;
+  final bool read;
+  final String? relatedEntityId;
+
+  AppNotification({
+    required this.id,
+    required this.userId,
+    required this.type,
+    required this.title,
+    required this.body,
+    required this.createdAt,
+    this.read = false,
+    this.relatedEntityId,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// MOCK DATA  (stand-in repository until Riverpod + Firestore wiring)
+// ---------------------------------------------------------------------------
+
+class MockData {
+  MockData._();
+
+  static final List<AppUser> users = [
+    const AppUser(
+      id: 'u_mwangi',
+      name: 'Mwangi',
+      email: 'mwangi@greentrack.app',
+      role: UserRole.farmer,
+      farmName: "Mwangi's Garden",
+    ),
+    const AppUser(
+      id: 'u_sarah',
+      name: 'Sarah',
+      email: 'sarah@greentrack.app',
+      role: UserRole.chef,
+      restaurantName: 'Fresh Bite Restaurant',
+    ),
+    const AppUser(
+      id: 'u_mary',
+      name: 'Mary',
+      email: 'mary@greentrack.app',
+      role: UserRole.consumer,
+    ),
+    const AppUser(
+      id: 'u_faith',
+      name: 'Faith',
+      email: 'faith@greentrack.app',
+      role: UserRole.consumer,
+    ),
+  ];
+
+  static final Map<String, NutritionReference> nutritionReference = {
+    'Tomatoes': const NutritionReference(
+      cropName: 'Tomatoes',
+      caloriesPer100g: 18,
+      proteinPer100g: 0.9,
+      carbsPer100g: 3.9,
+      fatPer100g: 0.2,
+      fiberPer100g: 1.2,
+    ),
+    'Lettuce': const NutritionReference(
+      cropName: 'Lettuce',
+      caloriesPer100g: 15,
+      proteinPer100g: 1.4,
+      carbsPer100g: 2.9,
+      fatPer100g: 0.2,
+      fiberPer100g: 1.3,
+    ),
+    'Carrots': const NutritionReference(
+      cropName: 'Carrots',
+      caloriesPer100g: 41,
+      proteinPer100g: 0.9,
+      carbsPer100g: 9.6,
+      fatPer100g: 0.2,
+      fiberPer100g: 2.8,
+    ),
+    'Avocado': const NutritionReference(
+      cropName: 'Avocado',
+      caloriesPer100g: 160,
+      proteinPer100g: 2.0,
+      carbsPer100g: 8.5,
+      fatPer100g: 14.7,
+      fiberPer100g: 6.7,
+    ),
+  };
+
+  static final CropBatch sampleBatch = CropBatch(
+    id: 'batch_001',
+    farmerId: 'u_mwangi',
+    cropName: 'Tomatoes',
+    farmingMethod: FarmingMethod.organic,
+    plotLocation: const GeoPoint(-1.286389, 36.817223),
+    plotName: 'Plot A',
+    sunExposure: SunExposure.fullSun,
+    stage: CropStage.harvested,
+    plannedDate: DateTime(2026, 4, 1),
+    plantedDate: DateTime(2026, 4, 5),
+    verifiedWeightKg: 48.5,
+    harvestedAt: DateTime(2026, 6, 20, 7, 30),
+    harvestWeatherConditions: 'Clear, 24°C',
+    organicCertified: true,
+    qrCodeId: 'qr_batch_001',
+  );
+
+  static final List<MealIngredient> sampleMealIngredients = [
+    MealIngredient(cropBatchId: 'batch_001', cropName: 'Tomatoes', quantityGrams: 80),
+    MealIngredient(cropBatchId: 'batch_002', cropName: 'Lettuce', quantityGrams: 60),
+    MealIngredient(cropBatchId: 'batch_003', cropName: 'Carrots', quantityGrams: 50),
+    MealIngredient(cropBatchId: 'batch_004', cropName: 'Avocado', quantityGrams: 40),
+  ];
+
+  static final Meal sampleMeal = Meal(
+    id: 'meal_001',
+    chefId: 'u_sarah',
+    restaurantName: 'Fresh Bite Restaurant',
+    name: 'Grilled Vegetable Salad',
+    ingredients: sampleMealIngredients,
+    nutrition: MealNutritionSnapshot.calculate(
+      sampleMealIngredients,
+      nutritionReference,
+    ),
+    allergens: [
+      MealAllergen(mealId: 'meal_001', allergenId: AllergenType.milk, contains: true),
+      MealAllergen(mealId: 'meal_001', allergenId: AllergenType.sesame, contains: true),
+      MealAllergen(
+        mealId: 'meal_001',
+        allergenId: AllergenType.treeNuts,
+        mayContain: true,
+      ),
+    ],
+    createdAt: DateTime(2026, 6, 28, 11, 0),
+    qrCodeId: 'qr_meal_001',
+  );
 }
